@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cormorant Garamond', Georgia, Cambria, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg-travertine: #F7F4EF;
+    --bg-sandstone: #EFEAE1;
+    --bg-obsidian: #151814;
+    --text-espresso: #1C1B18;
+    --text-taupe: #666159;
+    --accent-terracotta: #B86B43;
+    --accent-olive: #3A4D3E;
+    --border-limestone: #DFD8CC;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F7F4EF;
+    color: #1C1B18;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, .font-serif-editorial {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+  }
+
+  .font-mono-spec {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Architectural subtle blueprint grid background */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(28, 27, 24, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 27, 24, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.blueprint-grid-dark {
+  background-image: 
+    linear-gradient(to right, rgba(247, 244, 239, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 244, 239, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+.hotspot-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 1.5px solid #B86B43;
+  animation: pulseRing 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
