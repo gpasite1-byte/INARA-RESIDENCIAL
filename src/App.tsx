@@ -31,6 +31,7 @@ import {
   Menu,
   Play,
   Film,
+  MessageCircle,
 } from 'lucide-react';
 import {
   CURRENCIES,
@@ -133,29 +134,41 @@ export function App() {
   const [masterplanMode, setMasterplanMode] = useState<'map' | 'video'>('map');
   const [hotspotVideoActive, setHotspotVideoActive] = useState(false);
 
-  // Multi-page navigation state
-  type ActivePage = 'home' | 'conceito' | 'implantacao' | 'plantas' | 'lazer' | 'localizacao' | 'tudo';
-  const [activePage, setActivePage] = useState<ActivePage>('home');
+  // Continuous Smooth Scroll Navigation State
+  type SectionId = 'hero' | 'conceito' | 'implantacao' | 'plantas' | 'lazer' | 'localizacao';
+  const [activeSection, setActiveSection] = useState<SectionId>('hero');
 
-  const navigateToPage = (page: ActivePage) => {
-    setActivePage(page);
+  const scrollToSection = (sectionId: SectionId | string) => {
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const navigateToClubeLazer = () => {
-    setMobileMenuOpen(false);
-    if (activePage !== 'home') {
-      setActivePage('home');
-      setTimeout(() => {
-        const el = document.getElementById('lazer');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      const el = document.getElementById('lazer');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerOffset = 90;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
     }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionIds: SectionId[] = ['hero', 'conceito', 'implantacao', 'plantas', 'lazer', 'localizacao'];
+      const scrollPosition = window.scrollY + 160;
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sectionIds[i]);
+        if (el && el.offsetTop <= scrollPosition) {
+          setActiveSection(sectionIds[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Typology & Floorplan Selector State
   type ViewMode = 'blueprint' | 'video' | 'insolacao' | 'interior' | 'exterior';
@@ -194,24 +207,12 @@ export function App() {
 
   const handleRequestTypologyProposal = (typo: Typology) => {
     setFormTypology(typo.name);
-    navigateToPage('localizacao');
-    setTimeout(() => {
-      const el = document.getElementById('agendar');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 150);
+    scrollToSection('localizacao');
   };
 
   const handleSaveConfigurationToLead = (summaryText: string, typologyName: string) => {
     setFormTypology(`${typologyName} (Personalizada)`);
-    navigateToPage('localizacao');
-    setTimeout(() => {
-      const el = document.getElementById('agendar');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 150);
+    scrollToSection('localizacao');
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -231,19 +232,30 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#F7F4EF] text-[#1C1B18] relative">
-      {/* Top Consultoria Banner for the Project Owner */}
+      {/* Top Luxury Announcement & Quick Contact Bar */}
       <div className="bg-[#151814] text-[#F7F4EF] border-b border-white/10 px-4 py-2 text-xs">
-        <div className="max-w-[1380px] mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#B86B43] text-white font-mono-spec text-[10px] uppercase tracking-wider">
-              <Lightbulb className="w-3 h-3" /> Consultoria Incluída
+        <div className="max-w-[1380px] mx-auto flex flex-wrap items-center justify-between gap-3">
+          {/* Status Badge & Official Location */}
+          <div className="flex items-center gap-2.5">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#B86B43] text-white font-mono-spec text-[10px] uppercase tracking-wider font-semibold">
+              <Sparkles className="w-3 h-3" /> LANÇAMENTO EXCLUSIVO • TALATONA
             </span>
-            <span className="text-white/85 hidden sm:inline">
-              Criámos o site completo do <strong>Residencial Inara</strong> + o seu Guia Estratégico de Lançamento.
+            <span className="text-white/80 hidden md:inline text-[11px]">
+              Via A4A • 30 Moradias T4 Duplex de 217 m² • Lote 31 Clube Privativo • F.I.P.
             </span>
           </div>
 
           <div className="flex items-center gap-4 ml-auto">
+            {/* Direct Phone / Contact */}
+            <a
+              href="tel:+244931893859"
+              className="hidden sm:inline-flex items-center gap-1.5 text-white/85 hover:text-white font-mono-spec text-[11px] transition-colors"
+              title="Ligar para o Gabinete de Vendas"
+            >
+              <Phone className="w-3 h-3 text-[#B86B43]" />
+              <span>+244 931 893 859</span>
+            </a>
+
             {/* Currency Quick Switcher */}
             <div className="flex items-center gap-1 bg-white/10 rounded p-0.5 font-mono-spec text-[11px]">
               {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => (
@@ -266,13 +278,15 @@ export function App() {
               ))}
             </div>
 
+            {/* Discreet Strategy Access for Promoters */}
             <button
               type="button"
               onClick={() => setIsStrategyOpen(true)}
-              className="inline-flex items-center gap-1.5 text-[#D9A86C] hover:text-white font-medium transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-[#D9A86C] hover:text-white font-medium text-[11px] transition-colors cursor-pointer"
+              title="Abrir Guia Estratégico do Empreendimento"
             >
-              <span>Ver Conselhos p/ o seu Condomínio</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <Lightbulb className="w-3 h-3" />
+              <span className="hidden xl:inline">Guia Estratégico</span>
             </button>
           </div>
         </div>
@@ -284,7 +298,7 @@ export function App() {
           {/* Architectural Monogram & Brand with Official Logo */}
           <button
             type="button"
-            onClick={() => navigateToPage('home')}
+            onClick={() => scrollToSection('hero')}
             className="flex items-center gap-4 group cursor-pointer text-left"
           >
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-22 lg:h-22 rounded-2xl overflow-hidden border-2 border-[#DFD8CC] group-hover:border-[#B86B43] transition-all bg-[#4B5260] shadow-md flex items-center justify-center shrink-0">
@@ -308,9 +322,9 @@ export function App() {
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium">
             <button
               type="button"
-              onClick={() => navigateToPage('home')}
+              onClick={() => scrollToSection('hero')}
               className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activePage === 'home'
+                activeSection === 'hero'
                   ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
                   : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
               }`}
@@ -319,9 +333,9 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('conceito')}
+              onClick={() => scrollToSection('conceito')}
               className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activePage === 'conceito'
+                activeSection === 'conceito'
                   ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
                   : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
               }`}
@@ -330,9 +344,9 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('implantacao')}
+              onClick={() => scrollToSection('implantacao')}
               className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activePage === 'implantacao'
+                activeSection === 'implantacao'
                   ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
                   : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
               }`}
@@ -341,9 +355,9 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('plantas')}
+              onClick={() => scrollToSection('plantas')}
               className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activePage === 'plantas'
+                activeSection === 'plantas'
                   ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
                   : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
               }`}
@@ -352,9 +366,9 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={navigateToClubeLazer}
+              onClick={() => scrollToSection('lazer')}
               className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activePage === 'lazer'
+                activeSection === 'lazer'
                   ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
                   : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
               }`}
@@ -363,9 +377,9 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('localizacao')}
+              onClick={() => scrollToSection('localizacao')}
               className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activePage === 'localizacao'
+                activeSection === 'localizacao'
                   ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
                   : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
               }`}
@@ -385,7 +399,7 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('localizacao')}
+              onClick={() => scrollToSection('localizacao')}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-medium transition-colors shadow-sm cursor-pointer"
             >
               <span>Agendar Visita</span>
@@ -410,54 +424,54 @@ export function App() {
             <div className="flex flex-col space-y-3 text-sm font-medium">
               <button
                 type="button"
-                onClick={() => navigateToPage('home')}
+                onClick={() => scrollToSection('hero')}
                 className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activePage === 'home' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
+                  activeSection === 'hero' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
                 }`}
               >
                 00. Início / Visão Geral
               </button>
               <button
                 type="button"
-                onClick={() => navigateToPage('conceito')}
+                onClick={() => scrollToSection('conceito')}
                 className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activePage === 'conceito' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
+                  activeSection === 'conceito' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
                 }`}
               >
                 01. O Conceito & Arquitetura
               </button>
               <button
                 type="button"
-                onClick={() => navigateToPage('implantacao')}
+                onClick={() => scrollToSection('implantacao')}
                 className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activePage === 'implantacao' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
+                  activeSection === 'implantacao' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
                 }`}
               >
                 02. Implantação & Masterplan
               </button>
               <button
                 type="button"
-                onClick={() => navigateToPage('plantas')}
+                onClick={() => scrollToSection('plantas')}
                 className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activePage === 'plantas' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
+                  activeSection === 'plantas' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
                 }`}
               >
                 03. Plantas & Tipologias T4 Duplex
               </button>
               <button
                 type="button"
-                onClick={navigateToClubeLazer}
+                onClick={() => scrollToSection('lazer')}
                 className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activePage === 'lazer' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
+                  activeSection === 'lazer' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
                 }`}
               >
                 04. Galeria & Clube de Lazer (Lote 31)
               </button>
               <button
                 type="button"
-                onClick={() => navigateToPage('localizacao')}
+                onClick={() => scrollToSection('localizacao')}
                 className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activePage === 'localizacao' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
+                  activeSection === 'localizacao' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
                 }`}
               >
                 05. Localização & Obra (Via A4A)
@@ -476,8 +490,8 @@ export function App() {
               </button>
               <button
                 type="button"
-                onClick={() => navigateToPage('localizacao')}
-                className="w-full py-2.5 rounded bg-[#B86B43] text-white text-center text-xs font-mono-spec uppercase tracking-wider"
+                onClick={() => scrollToSection('localizacao')}
+                className="w-full py-2.5 rounded bg-[#B86B43] text-white text-center text-xs font-mono-spec uppercase tracking-wider font-semibold"
               >
                 Agendar Atendimento Privado
               </button>
@@ -486,64 +500,10 @@ export function App() {
         )}
       </header>
 
-      {/* Dedicated Page Header Banner (for non-home and non-tudo pages) */}
-      {activePage !== 'home' && activePage !== 'tudo' && (
-        <div className="bg-[#EFEAE1] border-b border-[#DFD8CC] py-6 px-4 sm:px-8">
-          <div className="max-w-[1380px] mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-mono-spec text-[#666159] uppercase tracking-wider mb-1">
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('home')}
-                  className="hover:text-[#B86B43] cursor-pointer inline-flex items-center gap-1"
-                >
-                  <span>INÍCIO</span>
-                </button>
-                <span>/</span>
-                <span className="text-[#B86B43] font-bold">
-                  {activePage === 'conceito' && 'O CONCEITO ARQUITETÓNICO'}
-                  {activePage === 'implantacao' && 'MASTERPLAN & IMPLANTAÇÃO'}
-                  {activePage === 'plantas' && 'PLANTAS & TIPOLOGIAS T4 DUPLEX'}
-                  {activePage === 'lazer' && 'CLUBE PRIVADO & LAZER'}
-                  {activePage === 'localizacao' && 'LOCALIZAÇÃO & AGENDAMENTO'}
-                </span>
-              </div>
-              <h1 className="font-serif-editorial text-2xl sm:text-3xl lg:text-4xl text-[#1C1B18]">
-                {activePage === 'conceito' && 'O Conceito & Filosofia Arquitetónica'}
-                {activePage === 'implantacao' && 'Implantação Geral & Masterplan dos 31 Lotes'}
-                {activePage === 'plantas' && 'Plantas Técnicas 2D & Modelos T4 Duplex'}
-                {activePage === 'lazer' && 'Clube Privado Lote 31 & Galeria de Lazer'}
-                {activePage === 'localizacao' && 'Localização em Talatona (Via A4A) & Visita Privada'}
-              </h1>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => navigateToPage('home')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white/80 hover:bg-white text-xs font-mono-spec uppercase tracking-wider text-[#1C1B18] border border-[#DFD8CC] cursor-pointer transition-colors"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Início</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => navigateToPage('tudo')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#1C1B18] hover:bg-[#B86B43] text-xs font-mono-spec uppercase tracking-wider text-white cursor-pointer transition-colors"
-              >
-                <span>Ver Apresentação Contínua</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* =====================================================================
-          1. FULL-VIEWPORT ARCHITECTURAL HERO PRESENTATION
+          1. FULL-VIEWPORT ARCHITECTURAL HERO PRESENTATION (#hero)
       ===================================================================== */}
-      {(activePage === 'home' || activePage === 'tudo') && (
-        <>
-          <section className="relative min-h-[82vh] lg:min-h-[88vh] flex flex-col justify-end overflow-hidden bg-[#151814]">
+      <section id="hero" className="relative min-h-[82vh] lg:min-h-[88vh] flex flex-col justify-end overflow-hidden bg-[#151814]">
             {/* Background Architectural Render with Smooth Crossfade */}
             <div className="absolute inset-0 z-0">
               {HERO_SCENES.map((scene, idx) => (
@@ -596,7 +556,7 @@ export function App() {
                 <div className="pt-2 flex flex-wrap items-center gap-4">
                   <button
                     type="button"
-                    onClick={() => navigateToPage('localizacao')}
+                    onClick={() => scrollToSection('localizacao')}
                     className="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold transition-all shadow-xl cursor-pointer"
                   >
                     <Calendar className="w-4 h-4" />
@@ -605,7 +565,7 @@ export function App() {
 
                   <button
                     type="button"
-                    onClick={navigateToClubeLazer}
+                    onClick={() => scrollToSection('lazer')}
                     className="inline-flex items-center gap-2 px-4 py-3 rounded-lg text-white/90 hover:text-white text-xs font-mono-spec uppercase tracking-wider hover:bg-white/10 transition-all cursor-pointer"
                   >
                     <span>Explorar Clube & Lazer</span>
@@ -662,7 +622,7 @@ export function App() {
               <div className="col-span-2 md:col-span-1 flex items-center justify-between md:block">
                 <div>
                   <span className="block font-mono-spec text-[10px] uppercase tracking-widest text-[#68D391]">
-                    VALOR DE LANÇAMENTO
+                     VALOR DE LANÇAMENTO
                   </span>
                   <strong className="font-serif-editorial text-2xl sm:text-3xl font-normal text-white">
                     Desde {formatPrice(TYPOLOGIES[0].basePriceEUR, currency)}
@@ -672,13 +632,157 @@ export function App() {
               </div>
             </div>
           </div>
-        </>
-      )}
+
+      {/* Executive Quick Chapter Navigation Portal */}
+      <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-[1380px] mx-auto border-b border-[#DFD8CC]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8">
+          <div>
+            <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#B86B43] block">
+              SUMÁRIO EXECUTIVO • O CONDOMÍNIO EM 4 CAPÍTULOS
+            </span>
+            <h2 className="font-serif-editorial text-2xl sm:text-4xl text-[#1C1B18] font-normal mt-1.5">
+              Explore o Residencial Inara em Detalhe
+            </h2>
+          </div>
+          <p className="text-xs sm:text-sm text-[#666159] max-w-md">
+            Desça para percorrer a apresentação contínua ou selecione um dos capítulos abaixo para saltar diretamente.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Card 1: Conceito */}
+          <div
+            onClick={() => scrollToSection('conceito')}
+            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
+          >
+            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
+              <img
+                src="/media/concept/inara-insolacao-ventilacao.jpg"
+                alt="O Conceito Arquitetónico"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
+                01 • ARQUITETURA
+              </span>
+            </div>
+            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
+                  O Conceito & Biofilia
+                </h3>
+                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
+                  Insolação natural calculada, ventilação cruzada permanente e brises em madeira Cumaru.
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
+                <span>Ver Conceito</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Implantação */}
+          <div
+            onClick={() => scrollToSection('implantacao')}
+            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
+          >
+            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
+              <img
+                src="/media/hero/inara-hero-perspective.jpg"
+                alt="Implantação & Masterplan"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
+                02 • MASTERPLAN
+              </span>
+            </div>
+            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
+                  Implantação (10.000 m²)
+                </h3>
+                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
+                  31 lotes nobres com alamedas arborizadas, portaria blindada 24h e Clube no Lote 31.
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
+                <span>Ver Masterplan</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Plantas */}
+          <div
+            onClick={() => scrollToSection('plantas')}
+            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
+          >
+            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
+              <img
+                src="/media/hero/inara-hero-daylight.jpg"
+                alt="Plantas & Tipologias"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
+                03 • PLANTAS TÉCNICAS
+              </span>
+            </div>
+            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
+                  Plantas & Tipologias T4
+                </h3>
+                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
+                  Planta Técnica 2D cotada, revelação 3D e personalização Tailor-Made de acabamentos.
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
+                <span>Inspecionar Plantas</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: Localização */}
+          <div
+            onClick={() => scrollToSection('localizacao')}
+            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
+          >
+            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
+              <img
+                src="/media/hero/inara-hero-twilight.jpg"
+                alt="Localização & Visita"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
+                04 • LOCALIZAÇÃO VIP
+              </span>
+            </div>
+            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
+                  Via A4A & Agendamento
+                </h3>
+                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
+                  Via A4A a 2 min do Talatona Plaza e Morabeza. Agendamento presencial no stand.
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
+                <span>Ver Localização</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* =====================================================================
           2. O CONCEITO & FILOSOFIA ARQUITETÓNICA (ASYMMETRIC EDITORIAL)
       ===================================================================== */}
-      {(activePage === 'conceito' || activePage === 'tudo') && (
       <section id="conceito" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Asymmetric Architectural Visual + Day/Night Light Study */}
@@ -834,12 +938,10 @@ export function App() {
           </div>
         </div>
       </section>
-      )}
 
       {/* =====================================================================
           3. INTERACTIVE MASTERPLAN & AMENITIES HOTSPOT VIEWER (#implantacao)
       ===================================================================== */}
-      {(activePage === 'implantacao' || activePage === 'tudo') && (
       <section id="implantacao" className="py-20 sm:py-28 bg-[#EFEAE1] border-y border-[#DFD8CC]">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-10">
           {/* Section Header + Category Filter Pills */}
@@ -1154,14 +1256,11 @@ export function App() {
           </div>
         </div>
       </section>
-      )}
 
       {/* =====================================================================
           4. INTERACTIVE TYPOLOGY & FLOOR PLAN SELECTOR (#plantas)
       ===================================================================== */}
-      {(activePage === 'plantas' || activePage === 'tudo') && (
-        <>
-          <section id="plantas" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
+      <section id="plantas" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
         {/* Header & Typology Selector Tabs */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-[#DFD8CC] pb-8">
           <div>
@@ -1537,13 +1636,10 @@ export function App() {
         currency={currency}
         onSaveConfigurationToLead={handleSaveConfigurationToLead}
       />
-      </>
-      )}
 
       {/* =====================================================================
           5. CURATED BENTO VISUAL GALLERY & LIGHTBOX (#lazer)
       ===================================================================== */}
-      {(activePage === 'home' || activePage === 'lazer' || activePage === 'tudo') && (
       <section id="lazer" className="py-20 sm:py-28 bg-[#151814] text-[#F7F4EF]">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -1782,168 +1878,11 @@ export function App() {
           </div>
         </div>
       </section>
-      )}
-
-      {/* Home Navigation Portal: 4 Dedicated Chapters for Início */}
-      {activePage === 'home' && (
-        <section className="py-16 sm:py-24 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#DFD8CC] pb-6">
-            <div>
-              <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#B86B43] block">
-                EXPLORE AS OUTRAS ÁREAS DO EMPREENDIMENTO
-              </span>
-              <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#1C1B18] font-normal mt-2">
-                Conheça Cada Detalhe do Residencial Inara
-              </h2>
-            </div>
-            <button
-              type="button"
-              onClick={() => navigateToPage('tudo')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#1C1B18] hover:bg-[#B86B43] text-white text-xs font-mono-spec uppercase tracking-wider font-medium cursor-pointer transition-colors shadow-sm self-start md:self-auto"
-            >
-              <span>📄 Ver Apresentação Contínua</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Card 1: Conceito */}
-            <div
-              onClick={() => navigateToPage('conceito')}
-              className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-                <img
-                  src="/media/concept/inara-insolacao-ventilacao.jpg"
-                  alt="O Conceito Arquitetónico"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                  01 • ARQUITETURA
-                </span>
-              </div>
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-serif-editorial text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                    O Conceito & Biofilia
-                  </h3>
-                  <p className="text-xs text-[#666159] mt-2 leading-relaxed">
-                    Insolação natural calculada, ventilação cruzada permanente e brises em madeira Cumaru nas 30 moradias exclusivas.
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                  <span>Abrir O Conceito</span>
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: Implantação */}
-            <div
-              onClick={() => navigateToPage('implantacao')}
-              className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-                <img
-                  src="/media/hero/inara-hero-perspective.jpg"
-                  alt="Implantação & Masterplan"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                  02 • MASTERPLAN
-                </span>
-              </div>
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-serif-editorial text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                    Implantação Geral (10.000 m²)
-                  </h3>
-                  <p className="text-xs text-[#666159] mt-2 leading-relaxed">
-                    31 lotes nobres com alamedas arborizadas, portaria blindada 24h com eclusa e Clube Privado no Lote 31.
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                  <span>Ver Masterplan 3D</span>
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: Plantas & Tipologias */}
-            <div
-              onClick={() => navigateToPage('plantas')}
-              className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-                <img
-                  src="/media/hero/inara-hero-daylight.jpg"
-                  alt="Plantas & Tipologias"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                  03 • PLANTAS TÉCNICAS 2D
-                </span>
-              </div>
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-serif-editorial text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                    Plantas Técnicas & Modelos T4
-                  </h3>
-                  <p className="text-xs text-[#666159] mt-2 leading-relaxed">
-                    Planta Técnica 2D cotada, vídeo 3D de revelação volumétrica, simulador financeiro e configurador de acabamentos.
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                  <span>Inspecionar Plantas 2D</span>
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4: Localização & Agendamento */}
-            <div
-              onClick={() => navigateToPage('localizacao')}
-              className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-                <img
-                  src="/media/hero/inara-hero-twilight.jpg"
-                  alt="Localização & Visita"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                  04 • TALATONA & VISITA VIP
-                </span>
-              </div>
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-serif-editorial text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                    Localização & Visita na Via A4A
-                  </h3>
-                  <p className="text-xs text-[#666159] mt-2 leading-relaxed">
-                    Via A4A a 2 min do Talatona Plaza e Morabeza. Matriz de acessos e agendamento presencial no stand.
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                  <span>Ver Localização & Agendar</span>
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* =====================================================================
           6. LOCATION, PROXIMITY MATRIX & CONSTRUCTION STATUS (#localizacao)
       ===================================================================== */}
-      {(activePage === 'localizacao' || activePage === 'tudo') && (
-        <>
-          <section id="localizacao" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
+      <section id="localizacao" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left 6 Cols: Neighborhood Proximity & Architectural Radar Map */}
           <div className="lg:col-span-6 space-y-6">
@@ -2323,116 +2262,6 @@ export function App() {
           </div>
         </div>
       </section>
-      </>
-      )}
-
-      {/* Bottom Page-to-Page Navigation Bar */}
-      {activePage !== 'home' && activePage !== 'tudo' && (
-        <div className="bg-[#EFEAE1] border-t border-[#DFD8CC] py-8 px-4 sm:px-8">
-          <div className="max-w-[1380px] mx-auto flex flex-wrap items-center justify-between gap-4">
-            {activePage === 'conceito' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('home')}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded bg-white hover:bg-[#F7F4EF] text-xs font-mono-spec uppercase tracking-wider border border-[#DFD8CC] cursor-pointer"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Voltar ao Início</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('implantacao')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold cursor-pointer shadow-sm ml-auto"
-                >
-                  <span>Seguinte: Implantação Geral</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </>
-            )}
-            {activePage === 'implantacao' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('conceito')}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded bg-white hover:bg-[#F7F4EF] text-xs font-mono-spec uppercase tracking-wider border border-[#DFD8CC] cursor-pointer"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Anterior: O Conceito</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('plantas')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold cursor-pointer shadow-sm ml-auto"
-                >
-                  <span>Seguinte: Plantas & Tipologias</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </>
-            )}
-            {activePage === 'plantas' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('implantacao')}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded bg-white hover:bg-[#F7F4EF] text-xs font-mono-spec uppercase tracking-wider border border-[#DFD8CC] cursor-pointer"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Anterior: Implantação</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('lazer')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold cursor-pointer shadow-sm ml-auto"
-                >
-                  <span>Seguinte: Clube & Lazer</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </>
-            )}
-            {activePage === 'lazer' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('plantas')}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded bg-white hover:bg-[#F7F4EF] text-xs font-mono-spec uppercase tracking-wider border border-[#DFD8CC] cursor-pointer"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Anterior: Plantas & Tipologias</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('localizacao')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold cursor-pointer shadow-sm ml-auto"
-                >
-                  <span>Seguinte: Localização & Agendamento</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </>
-            )}
-            {activePage === 'localizacao' && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('lazer')}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded bg-white hover:bg-[#F7F4EF] text-xs font-mono-spec uppercase tracking-wider border border-[#DFD8CC] cursor-pointer"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Anterior: Clube & Lazer</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage('home')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold cursor-pointer shadow-sm ml-auto"
-                >
-                  <span>Voltar à Apresentação Principal</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* =====================================================================
           FOOTER
@@ -2479,14 +2308,14 @@ export function App() {
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('implantacao')}
+              onClick={() => scrollToSection('implantacao')}
               className="hover:text-white transition-colors cursor-pointer"
             >
               MASTERPLAN (10.000 m²)
             </button>
             <button
               type="button"
-              onClick={() => navigateToPage('plantas')}
+              onClick={() => scrollToSection('plantas')}
               className="hover:text-white transition-colors cursor-pointer"
             >
               MORADIAS T4 DUPLEX
@@ -2495,18 +2324,37 @@ export function App() {
         </div>
       </footer>
 
-      {/* Floating Strategy / Consultant Helper Button */}
-      <button
-        type="button"
-        onClick={() => setIsStrategyOpen(true)}
-        className="fixed bottom-5 right-5 z-30 flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#1C1B18] hover:bg-[#B86B43] text-[#F7F4EF] shadow-2xl border border-[#D9A86C]/40 transition-all cursor-pointer group"
-        title="Ver conselhos estratégicos e personalizar moeda/cidade"
-      >
-        <Lightbulb className="w-4 h-4 text-[#D9A86C] group-hover:text-white" />
-        <span className="font-mono-spec text-xs font-medium">
-          Conselhos p/ o Condomínio & Personalizar
-        </span>
-      </button>
+      {/* Floating Action Buttons: WhatsApp VIP Direct + Quick Visit */}
+      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2.5">
+        {/* WhatsApp VIP Concierge Button */}
+        <a
+          href="https://wa.me/244931893859?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20exclusivas%20e%20tabela%20de%20pre%C3%A7os%20do%20Residencial%20Inara%20em%20Talatona."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#2E5A3C] hover:bg-[#23452E] text-white shadow-2xl border border-emerald-400/40 transition-all cursor-pointer group hover:scale-[1.02]"
+          title="Falar com Consultor no WhatsApp Oficial"
+        >
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+          </span>
+          <MessageCircle className="w-4 h-4 text-emerald-300 group-hover:text-white" />
+          <span className="font-mono-spec text-xs font-semibold tracking-wide">
+            WhatsApp VIP • Talatona
+          </span>
+        </a>
+
+        {/* Agendar Visita Direta */}
+        <button
+          type="button"
+          onClick={() => scrollToSection('localizacao')}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1C1B18]/90 hover:bg-[#1C1B18] text-[#F7F4EF] shadow-lg border border-white/15 text-[11px] font-mono-spec transition-all cursor-pointer"
+          title="Agendar Visita ao Terreno e Stand de Vendas"
+        >
+          <Calendar className="w-3.5 h-3.5 text-[#B86B43]" />
+          <span>Agendar Visita</span>
+        </button>
+      </div>
 
       {/* Fullscreen Gallery Lightbox Modal */}
       {lightboxItem && (
