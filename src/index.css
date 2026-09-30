@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Cormorant Garamond', Georgia, Cambria, serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -12,10 +12,14 @@
     --bg-sandstone: #EFEAE1;
     --bg-obsidian: #151814;
     --text-espresso: #1C1B18;
-    --text-taupe: #666159;
+    --text-taupe: #6B6459;
     --accent-terracotta: #B86B43;
     --accent-olive: #3A4D3E;
-    --border-limestone: #DFD8CC;
+    --border-limestone: #E2DBD0;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
@@ -26,44 +30,56 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   }
 
+  /* Premium serif editorial headings */
   h1, h2, h3, .font-serif-editorial {
-    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-family: 'Playfair Display', Georgia, serif !important;
+    letter-spacing: -0.01em;
   }
 
+  /* Refined monospace for specs and labels */
   .font-mono-spec {
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'DM Mono', monospace !important;
     font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+
+  /* Premium selection color */
+  ::selection {
+    background-color: rgba(184, 107, 67, 0.18);
+    color: #1C1B18;
   }
 }
 
-/* Architectural subtle blueprint grid background */
+/* ── Architectural subtle grid backgrounds ──────────────────── */
 .blueprint-grid {
-  background-image: 
-    linear-gradient(to right, rgba(28, 27, 24, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(28, 27, 24, 0.04) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-.blueprint-grid-dark {
-  background-image: 
-    linear-gradient(to right, rgba(247, 244, 239, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(247, 244, 239, 0.05) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(28, 27, 24, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 27, 24, 0.035) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
+.blueprint-grid-dark {
+  background-image:
+    linear-gradient(to right, rgba(247, 244, 239, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 244, 239, 0.045) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+/* ── Hotspot pulse animation ─────────────────────────────────── */
 @keyframes pulseRing {
   0% {
-    transform: scale(0.95);
-    opacity: 0.85;
+    transform: scale(0.92);
+    opacity: 0.9;
   }
   70% {
-    transform: scale(1.75);
+    transform: scale(1.8);
     opacity: 0;
   }
   100% {
-    transform: scale(1.75);
+    transform: scale(1.8);
     opacity: 0;
   }
 }
@@ -71,8 +87,101 @@
 .hotspot-pulse::after {
   content: '';
   position: absolute;
-  inset: -4px;
+  inset: -5px;
   border-radius: 9999px;
   border: 1.5px solid #B86B43;
-  animation: pulseRing 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: pulseRing 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  pointer-events: none;
+}
+
+/* ── Premium form inputs ─────────────────────────────────────── */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #B86B43 !important;
+  box-shadow: 0 0 0 3px rgba(184, 107, 67, 0.12);
+}
+
+/* ── Smooth fade-in for page load ───────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Luxury horizontal rule separator ───────────────────────── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #B86B43;
+  opacity: 0.5;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+/* ── Elegant scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #EFEAE1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DFD8CC;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B86B43;
+}
+
+/* ── Image hover subtle zoom ─────────────────────────────────── */
+.img-hover-zoom {
+  overflow: hidden;
+}
+
+.img-hover-zoom img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.img-hover-zoom:hover img {
+  transform: scale(1.04);
+}
+
+/* ── Number/stat display ─────────────────────────────────────── */
+.stat-number {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-feature-settings: "lnum" 1;
+  line-height: 1;
 }

@@ -233,31 +233,31 @@ export function App() {
   return (
     <div className="min-h-screen bg-[#F7F4EF] text-[#1C1B18] relative">
       {/* Top Luxury Announcement & Quick Contact Bar */}
-      <div className="bg-[#151814] text-[#F7F4EF] border-b border-white/10 px-4 py-2 text-xs">
+      <div className="bg-[#0F1210] text-[#F7F4EF] border-b border-white/[0.07] px-4 py-2">
         <div className="max-w-[1380px] mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Status Badge & Official Location */}
-          <div className="flex items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#B86B43] text-white font-mono-spec text-[10px] uppercase tracking-wider font-semibold">
-              <Sparkles className="w-3 h-3" /> LANÇAMENTO EXCLUSIVO • TALATONA
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-[#B86B43] text-white font-mono-spec text-[9.5px] uppercase tracking-[0.18em] font-medium">
+              <Sparkles className="w-2.5 h-2.5" /> Lançamento Exclusivo
             </span>
-            <span className="text-white/80 hidden md:inline text-[11px]">
-              Via A4A • 30 Moradias T4 Duplex de 217 m² • Lote 31 Clube Privativo • F.I.P.
+            <span className="text-white/50 hidden md:inline font-mono-spec text-[10.5px] tracking-wide">
+              Via A4A, Talatona · 30 moradias T4 Duplex · Clube privativo Lote 31
             </span>
           </div>
 
-          <div className="flex items-center gap-4 ml-auto">
+          <div className="flex items-center gap-5 ml-auto">
             {/* Direct Phone / Contact */}
             <a
               href="tel:+244931893859"
-              className="hidden sm:inline-flex items-center gap-1.5 text-white/85 hover:text-white font-mono-spec text-[11px] transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 text-white/55 hover:text-white/85 font-mono-spec text-[10.5px] tracking-wide transition-colors"
               title="Ligar para o Gabinete de Vendas"
             >
-              <Phone className="w-3 h-3 text-[#B86B43]" />
+              <Phone className="w-2.5 h-2.5 text-[#B86B43]" />
               <span>+244 931 893 859</span>
             </a>
 
             {/* Currency Quick Switcher */}
-            <div className="flex items-center gap-1 bg-white/10 rounded p-0.5 font-mono-spec text-[11px]">
+            <div className="flex items-center gap-0.5 bg-white/[0.06] rounded-sm p-0.5 font-mono-spec text-[10px]">
               {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => (
                 <button
                   key={code}
@@ -266,10 +266,10 @@ export function App() {
                     setCurrency(code);
                     setCustomCity(CURRENCIES[code].cityDefault);
                   }}
-                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                  className={`px-2 py-0.5 rounded-sm transition-all cursor-pointer ${
                     currency === code
-                      ? 'bg-[#B86B43] text-white font-medium'
-                      : 'text-white/70 hover:text-white'
+                      ? 'bg-[#B86B43] text-white'
+                      : 'text-white/50 hover:text-white/80'
                   }`}
                   title={`Mudar moeda para ${CURRENCIES[code].label}`}
                 >
@@ -282,130 +282,92 @@ export function App() {
             <button
               type="button"
               onClick={() => setIsStrategyOpen(true)}
-              className="inline-flex items-center gap-1.5 text-[#D9A86C] hover:text-white font-medium text-[11px] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-[#C9956C]/70 hover:text-[#D9A86C] font-mono-spec text-[10.5px] tracking-wide transition-colors cursor-pointer"
               title="Abrir Guia Estratégico do Empreendimento"
             >
-              <Lightbulb className="w-3 h-3" />
+              <Lightbulb className="w-2.5 h-2.5" />
               <span className="hidden xl:inline">Guia Estratégico</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Single Floating Glassmorphic Navigation Header with Enlarged Logo */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-[#F7F4EF]/95 border-b border-[#DFD8CC] transition-all">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-24 sm:h-28 flex items-center justify-between">
-          {/* Architectural Monogram & Brand with Official Logo */}
+
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#F7F4EF]/97 border-b border-[#E2DBD0] transition-all">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-[88px] sm:h-[100px] flex items-center justify-between">
+          {/* Brand Wordmark with Official Logo */}
           <button
             type="button"
             onClick={() => scrollToSection('hero')}
-            className="flex items-center gap-4 group cursor-pointer text-left"
+            className="flex items-center gap-3.5 group cursor-pointer text-left"
           >
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-22 lg:h-22 rounded-2xl overflow-hidden border-2 border-[#DFD8CC] group-hover:border-[#B86B43] transition-all bg-[#4B5260] shadow-md flex items-center justify-center shrink-0">
+            <div className="relative w-14 h-14 sm:w-[62px] sm:h-[62px] rounded-xl overflow-hidden border border-[#E2DBD0] group-hover:border-[#B86B43]/50 transition-all bg-[#4B5260] shadow-sm flex items-center justify-center shrink-0">
               <img
                 src="/media/logo/inara-emblem.jpg"
                 alt="Logomarca Oficial INARA RESIDÊNCIAL TALATONA"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div>
-              <span className="block font-serif-editorial text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-[#1C1B18] leading-none">
-                INARA
+              <span className="block font-serif-editorial text-[27px] sm:text-[30px] font-semibold text-[#1C1B18] leading-none tracking-[-0.02em]">
+                Inara
               </span>
-              <span className="block font-mono-spec text-[11px] sm:text-xs lg:text-[13px] uppercase tracking-[0.24em] text-[#B86B43] mt-1.5 font-bold">
-                RESIDÊNCIAL TALATONA
+              <span className="block font-mono-spec text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#B86B43] mt-1.5">
+                Residêncial · Talatona
               </span>
             </div>
           </button>
 
-          {/* Page-Based Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium">
-            <button
-              type="button"
-              onClick={() => scrollToSection('hero')}
-              className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activeSection === 'hero'
-                  ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
-                  : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
-              }`}
-            >
-              Início
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('conceito')}
-              className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activeSection === 'conceito'
-                  ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
-                  : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
-              }`}
-            >
-              O Conceito
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('implantacao')}
-              className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activeSection === 'implantacao'
-                  ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
-                  : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
-              }`}
-            >
-              Implantação
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('plantas')}
-              className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activeSection === 'plantas'
-                  ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
-                  : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
-              }`}
-            >
-              Plantas & Tipologias
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('lazer')}
-              className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activeSection === 'lazer'
-                  ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
-                  : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
-              }`}
-            >
-              Clube & Lazer
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('localizacao')}
-              className={`py-2 text-[13px] uppercase font-mono-spec tracking-wider transition-all cursor-pointer ${
-                activeSection === 'localizacao'
-                  ? 'text-[#B86B43] border-b-2 border-[#B86B43] font-bold'
-                  : 'text-[#1C1B18]/75 hover:text-[#B86B43]'
-              }`}
-            >
-              Localização
-            </button>
+
+
+          {/* Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-7 xl:gap-8">
+            {([
+              { id: 'hero', label: 'Início' },
+              { id: 'conceito', label: 'Conceito' },
+              { id: 'implantacao', label: 'Implantação' },
+              { id: 'plantas', label: 'Plantas' },
+              { id: 'lazer', label: 'Clube & Lazer' },
+              { id: 'localizacao', label: 'Contacto' },
+            ] as { id: string; label: string }[]).map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => scrollToSection(item.id)}
+                className={`relative py-1 text-[13px] font-medium tracking-wide transition-all duration-200 cursor-pointer ${
+                  activeSection === item.id
+                    ? 'text-[#B86B43]'
+                    : 'text-[#1C1B18]/55 hover:text-[#1C1B18]'
+                }`}
+              >
+                {item.label}
+                {activeSection === item.id && (
+                  <span className="absolute -bottom-px left-0 right-0 h-px bg-[#B86B43] rounded-full" />
+                )}
+              </button>
+            ))}
           </nav>
 
           {/* Primary CTA + Brochure Trigger */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2.5">
             <button
               type="button"
               onClick={() => setIsBrochureOpen(true)}
-              className="px-4 py-2.5 rounded border border-[#DFD8CC] hover:border-[#1C1B18] text-xs font-mono-spec uppercase tracking-wider text-[#1C1B18] transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-lg border border-[#E2DBD0] hover:border-[#B86B43]/40 text-[12px] font-medium text-[#6B6459] hover:text-[#1C1B18] tracking-wide transition-all cursor-pointer"
             >
               Brochura PDF
             </button>
             <button
               type="button"
               onClick={() => scrollToSection('localizacao')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-medium transition-colors shadow-sm cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#B86B43] hover:bg-[#9E5B36] text-white text-[12px] font-semibold tracking-wide transition-all shadow-sm hover:shadow-md cursor-pointer"
             >
+              <Calendar className="w-3.5 h-3.5" />
               <span>Agendar Visita</span>
-              <ArrowUpRight className="w-4 h-4" />
             </button>
           </div>
+
 
           {/* Mobile Menu Trigger */}
           <button
@@ -529,125 +491,127 @@ export function App() {
               />
             </div>
 
-            {/* Main Hero Content: Positioned at Bottom-Left with Maximum Openness and Refined Typography */}
-            <div className="relative z-10 max-w-[1380px] w-full mx-auto px-4 sm:px-8 pb-10 sm:pb-14">
-              <div className="max-w-3xl lg:max-w-4xl space-y-3 sm:space-y-4">
-                {/* Architectural Sub-Badge */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[#D9A86C] font-mono-spec text-[10px] sm:text-[11px] uppercase tracking-[0.22em]">
-                  <span>Talatona • Luanda</span>
-                  <span className="w-1 h-1 rounded-full bg-[#D9A86C]" />
+            {/* Main Hero Content */}
+            <div className="relative z-10 max-w-[1380px] w-full mx-auto px-4 sm:px-8 pb-12 sm:pb-16">
+              <div className="max-w-3xl lg:max-w-4xl space-y-5">
+                {/* Location Pill */}
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/30 backdrop-blur-sm border border-white/15 text-[#C9A87C] font-mono-spec text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.25em]">
+                  <span>Talatona · Luanda</span>
+                  <span className="w-1 h-1 rounded-full bg-[#C9A87C]/60" />
                   <span>30 Moradias T4 Duplex</span>
                 </div>
 
-                {/* Display Headline Requested by User */}
-                <h1 className="font-serif-editorial text-2xl sm:text-4xl lg:text-[50px] xl:text-[54px] text-white font-normal leading-[1.12] tracking-tight drop-shadow-lg">
-                  Inara Residêncial Talatona —{' '}
-                  <span className="italic text-[#E8D5B5] font-light">
-                    “Sua casa dos sonhos é agora uma realidade”
+                {/* Editorial Headline */}
+                <h1 className="font-serif-editorial text-[32px] sm:text-[46px] lg:text-[58px] xl:text-[66px] text-white font-semibold leading-[1.06] tracking-[-0.02em] drop-shadow-xl">
+                  Inara Residêncial{' '}
+                  <br />
+                  <span className="italic font-normal text-[#E8D5B5]">
+                    Talatona
                   </span>
                 </h1>
 
-                {/* Subtitle / Descriptive Text Requested by User */}
-                <p className="text-xs sm:text-sm lg:text-[15px] xl:text-base text-white/90 font-light leading-relaxed max-w-3xl drop-shadow-md">
-                  Condomínio fechado de alto padrão com 30 moradias T4 Duplex de 217 m² ABC (100% em suíte com varandas privativas, escritório independente, piscina privativa e 2 vagas) num terreno nobre de 10.000 m² em Talatona, com clube de lazer completo no Lote 31 (767 m²).
+                {/* Concise, Factual Subtitle */}
+                <p className="text-[13.5px] sm:text-[15px] lg:text-[16px] text-white/70 font-light leading-[1.7] max-w-xl drop-shadow-md">
+                  Condomínio privado de alto padrão — 30 moradias T4 Duplex
+                  de 217 m² com 4 suítes, piscina privativa e clube exclusivo
+                  de lazer no Lote 31, Talatona.
                 </p>
 
-                {/* Clean, Refined Single Action Button + Smooth Scroll Link */}
-                <div className="pt-2 flex flex-wrap items-center gap-4">
+                {/* Action Buttons */}
+                <div className="pt-2 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={() => scrollToSection('localizacao')}
-                    className="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg bg-[#B86B43] hover:bg-[#96522F] text-white text-xs font-mono-spec uppercase tracking-wider font-semibold transition-all shadow-xl cursor-pointer"
+                    className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-[#B86B43] hover:bg-[#9E5B36] text-white text-[12.5px] font-semibold tracking-wide transition-all shadow-2xl shadow-[#B86B43]/20 hover:shadow-[#B86B43]/35 cursor-pointer hover:scale-[1.01]"
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>Agendar Atendimento Privado</span>
+                    <span>Solicitar Proposta Privada</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => scrollToSection('lazer')}
-                    className="inline-flex items-center gap-2 px-4 py-3 rounded-lg text-white/90 hover:text-white text-xs font-mono-spec uppercase tracking-wider hover:bg-white/10 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-3.5 rounded-lg text-white/70 hover:text-white text-[12.5px] font-medium hover:bg-white/10 border border-white/15 hover:border-white/25 transition-all cursor-pointer"
                   >
-                    <span>Explorar Clube & Lazer</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-[#D9A86C]" />
+                    <span>Ver o Clube & Lazer</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-[#C9A87C]" />
                   </button>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Architectural Metrics Ribbon: Positioned outside the Hero so it leaves the cover image completely unobstructed */}
-          <div className="relative z-20 border-y border-[#DFD8CC]/20 bg-[#151814] text-[#F7F4EF]">
-            <div className="max-w-[1380px] mx-auto px-4 sm:px-8 py-5 grid grid-cols-2 md:grid-cols-5 gap-6">
-              <div className="border-r border-white/10 pr-4">
-                <span className="block font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C]">
-                  EXCLUSIVIDADE
+          {/* Metrics Ribbon */}
+          <div className="relative z-20 bg-[#0F1210] text-[#F7F4EF] border-b border-white/[0.06]">
+            <div className="max-w-[1380px] mx-auto px-4 sm:px-8 py-7 grid grid-cols-2 md:grid-cols-5 gap-x-5 gap-y-6">
+              <div className="border-r border-white/[0.08] pr-5">
+                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
+                  Exclusividade
                 </span>
-                <strong className="font-serif-editorial text-2xl sm:text-3xl font-normal">
-                  30 Moradias
+                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
+                  30
                 </strong>
-                <span className="block text-xs text-white/65 mt-0.5">Condomínio fechado unifamiliar</span>
+                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">moradias unifamiliares</span>
               </div>
 
-              <div className="md:border-r border-white/10 pr-4">
-                <span className="block font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C]">
-                  TERRENO URBANO
+              <div className="md:border-r border-white/[0.08] pr-5">
+                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
+                  Terreno
                 </span>
-                <strong className="font-serif-editorial text-2xl sm:text-3xl font-normal">
-                  10.000 m²
+                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
+                  10.000
                 </strong>
-                <span className="block text-xs text-white/65 mt-0.5">31 Lotes (Lotes 220 m² a 358 m²)</span>
+                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">m² · 31 lotes</span>
               </div>
 
-              <div className="border-r border-white/10 pr-4">
-                <span className="block font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C]">
-                  TIPOLOGIA OFICIAL
+              <div className="border-r border-white/[0.08] pr-5">
+                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
+                  Tipologia
                 </span>
-                <strong className="font-serif-editorial text-2xl sm:text-3xl font-normal">
-                  T4 Duplex (217 m²)
+                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
+                  217
                 </strong>
-                <span className="block text-xs text-white/65 mt-0.5">4 Suítes + Escritório + Piscina</span>
+                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">m² · T4 Duplex</span>
               </div>
 
-              <div className="md:border-r border-white/10 pr-4">
-                <span className="block font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C]">
-                  CLUBE & LAZER
+              <div className="md:border-r border-white/[0.08] pr-5">
+                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
+                  Clube & Lazer
                 </span>
-                <strong className="font-serif-editorial text-2xl sm:text-3xl font-normal">
-                  Lote 31 (767 m²)
+                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
+                  767
                 </strong>
-                <span className="block text-xs text-white/65 mt-0.5">Cinema, ginásio, festas, quadra</span>
+                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">m² · Lote 31 exclusivo</span>
               </div>
 
-              <div className="col-span-2 md:col-span-1 flex items-center justify-between md:block">
-                <div>
-                  <span className="block font-mono-spec text-[10px] uppercase tracking-widest text-[#68D391]">
-                     VALOR DE LANÇAMENTO
-                  </span>
-                  <strong className="font-serif-editorial text-2xl sm:text-3xl font-normal text-white">
-                    Desde {formatPrice(TYPOLOGIES[0].basePriceEUR, currency)}
-                  </strong>
-                  <span className="block text-xs text-white/65 mt-0.5">Financiamento ou pagamento faseado</span>
-                </div>
+              <div className="col-span-2 md:col-span-1">
+                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#5BAD7A] mb-2">
+                  Desde
+                </span>
+                <strong className="stat-number text-[22px] sm:text-[28px] font-semibold leading-none text-white">
+                  {formatPrice(TYPOLOGIES[0].basePriceEUR, currency)}
+                </strong>
+                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">Pagamento faseado disponível</span>
               </div>
             </div>
           </div>
 
       {/* Executive Quick Chapter Navigation Portal */}
       <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-[1380px] mx-auto border-b border-[#DFD8CC]">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-9">
           <div>
-            <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#B86B43] block">
-              SUMÁRIO EXECUTIVO • O CONDOMÍNIO EM 4 CAPÍTULOS
+            <span className="font-mono-spec text-[9.5px] uppercase tracking-[0.25em] text-[#B86B43] block mb-2">
+              O condomínio em quatro capítulos
             </span>
-            <h2 className="font-serif-editorial text-2xl sm:text-4xl text-[#1C1B18] font-normal mt-1.5">
-              Explore o Residencial Inara em Detalhe
+            <h2 className="font-serif-editorial text-[26px] sm:text-[38px] text-[#1C1B18] font-semibold leading-tight tracking-[-0.01em]">
+              Explore o Residencial Inara
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#666159] max-w-md">
-            Desça para percorrer a apresentação contínua ou selecione um dos capítulos abaixo para saltar diretamente.
+          <p className="text-[13px] text-[#6B6459] max-w-xs leading-relaxed font-light">
+            Selecione um capítulo para navegar diretamente para a secção pretendida.
           </p>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1: Conceito */}
@@ -869,21 +833,23 @@ export function App() {
 
           {/* Right Column: Editorial Narrative + 3 Condominium Value Pillars */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 text-xs font-mono-spec uppercase tracking-[0.2em] text-[#B86B43]">
-              <span>01 • O CONCEITO RESIDENCIAL INARA</span>
+            <div className="inline-flex items-center gap-2 font-mono-spec text-[9.5px] uppercase tracking-[0.25em] text-[#B86B43]">
+              <span>01 · O Conceito · Residencial Inara</span>
             </div>
 
-            <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#1C1B18] font-normal leading-[1.12]">
-              Desenhado para a luz. Construído com sofisticação em Talatona.
+            <h2 className="font-serif-editorial text-[30px] sm:text-[42px] lg:text-[48px] text-[#1C1B18] font-semibold leading-[1.1] tracking-[-0.01em]">
+              Desenhado para a luz.{' '}
+              <span className="italic font-normal text-[#6B6459]">Construído com sofisticação.</span>
             </h2>
 
-            <p className="text-[#666159] text-base leading-relaxed">
-              <strong className="text-[#1C1B18] font-medium">Inara</strong> significa{' '}
-              <em>&ldquo;raio de luz&rdquo;</em>. Um condomínio fechado de 30 moradias de alto padrão
-              com arquitetura moderna e harmoniosa na Via A4A (Estrada do Rio Cambambe), Talatona.
-              Desenvolvido pela <strong className="text-[#1C1B18]">F.I.P. – Finest Investment Partners</strong> para
+            <p className="text-[#6B6459] text-[15px] leading-[1.78] font-light">
+              <strong className="text-[#1C1B18] font-semibold">Inara</strong> significa{' '}
+              <em>"raio de luz"</em>. Um condomínio fechado de 30 moradias de alto padrão
+              com arquitetura moderna e harmoniosa na Via A4A, Talatona.
+              Desenvolvido pela <strong className="text-[#1C1B18] font-medium">F.I.P. – Finest Investment Partners</strong> para
               proporcionar um ambiente familiar e tranquilo com máxima privacidade, conforto e infraestrutura completa.
             </p>
+
 
             {/* The 3 Essential Condominium Pillars */}
             <div className="space-y-4 pt-2">
@@ -947,16 +913,18 @@ export function App() {
           {/* Section Header + Category Filter Pills */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div>
-              <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#B86B43] block">
-                02 • IMPLANTAÇÃO GERAL & INFRAESTRUTURA DE LAZER
+              <span className="font-mono-spec text-[9.5px] uppercase tracking-[0.25em] text-[#B86B43] block mb-2">
+                02 · Implantação · Masterplan Interativo
               </span>
-              <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#1C1B18] font-normal mt-2">
-                Masterplan Interativo — Explore cada recanto do Inara
+              <h2 className="font-serif-editorial text-[28px] sm:text-[42px] text-[#1C1B18] font-semibold leading-tight tracking-[-0.01em]">
+                Explore cada recanto{' '}
+                <span className="italic font-normal text-[#6B6459]">do Inara</span>
               </h2>
-              <p className="text-sm sm:text-base text-[#666159] mt-2 max-w-2xl">
-                Clique nos pontos numerados sobre a perspetiva de implantação geral para conhecer em
-                detalhe a segurança, os espaços de convívio e o parque botânico.
+              <p className="text-[13.5px] text-[#6B6459] mt-3 max-w-xl leading-relaxed font-light">
+                Clique nos pontos numerados sobre o masterplan para conhecer em detalhe
+                a segurança, os espaços de convívio e o parque botânico.
               </p>
+
             </div>
 
             {/* Masterplan View Toggle + Category Filter Buttons */}
@@ -2094,39 +2062,40 @@ export function App() {
             <div className="lg:col-span-7 bg-[#F7F4EF] text-[#1C1B18] p-6 sm:p-10 rounded-lg border border-[#DFD8CC] shadow-2xl">
               {!formSubmitted ? (
                 <form onSubmit={handleFormSubmit} className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#DFD8CC]">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-5 border-b border-[#E2DBD0]">
                     <div>
-                      <h3 className="font-serif-editorial text-2xl sm:text-3xl font-semibold text-[#1C1B18]">
-                        Solicitar Atendimento ou Tabela de Preços
+                      <h3 className="font-serif-editorial text-[22px] sm:text-[26px] font-semibold text-[#1C1B18] leading-tight tracking-[-0.01em]">
+                        Solicitar Proposta Personalizada
                       </h3>
-                      <p className="text-xs text-[#666159]">
-                        Resposta personalizada em menos de 30 minutos úteis.
+                      <p className="text-[12.5px] text-[#6B6459] mt-1 font-light">
+                        Resposta do consultor em menos de 30 minutos úteis.
                       </p>
                     </div>
-                    <span className="font-mono-spec text-[11px] px-2.5 py-1 rounded bg-[#2E5A3C]/15 text-[#2E5A3C] font-medium self-start sm:self-center">
-                      Confidencialidade Garantida
+                    <span className="inline-flex items-center gap-1.5 font-mono-spec text-[9.5px] px-2.5 py-1.5 rounded-md bg-[#2E5A3C]/10 text-[#2E5A3C] self-start whitespace-nowrap tracking-wide">
+                      <ShieldCheck className="w-3 h-3" />
+                      Confidencial
                     </span>
                   </div>
 
                   {/* Modality Selector */}
                   <div>
-                    <label className="block font-mono-spec text-[11px] uppercase tracking-wider text-[#666159] mb-2">
-                      1. Como prefere ser atendido?
+                    <label className="block font-mono-spec text-[10px] uppercase tracking-[0.2em] text-[#6B6459] mb-2.5">
+                      Como prefere ser atendido?
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {[
-                        { id: 'presencial', label: 'Visita Presencial ao Local' },
-                        { id: 'video', label: 'Reunião Online (Vídeo)' },
+                        { id: 'presencial', label: 'Visita Presencial' },
+                        { id: 'video', label: 'Reunião Online' },
                         { id: 'tabela', label: 'Receber Tabela & Plantas' },
                       ].map((mode) => (
                         <button
                           key={mode.id}
                           type="button"
                           onClick={() => setFormVisitType(mode.id as typeof formVisitType)}
-                          className={`py-2.5 px-3 rounded text-xs font-medium border text-center transition-all cursor-pointer ${
+                          className={`py-2.5 px-3 rounded-lg text-[12px] font-medium border text-center transition-all cursor-pointer ${
                             formVisitType === mode.id
                               ? 'bg-[#1C1B18] text-white border-[#1C1B18]'
-                              : 'bg-white text-[#1C1B18] border-[#DFD8CC] hover:border-[#B86B43]'
+                              : 'bg-white text-[#6B6459] border-[#E2DBD0] hover:border-[#B86B43]/50 hover:text-[#1C1B18]'
                           }`}
                         >
                           {mode.label}
@@ -2135,24 +2104,25 @@ export function App() {
                     </div>
                   </div>
 
+
                   {/* Name & Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-[#1C1B18] mb-1.5">
-                        Nome Completo *
+                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
+                        Nome Completo <span className="text-[#B86B43]">*</span>
                       </label>
                       <input
                         type="text"
                         required
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
-                        placeholder="Ex: Dr. António Albuquerque"
-                        className="w-full px-4 py-3 rounded bg-white border border-[#DFD8CC] text-sm focus:outline-none focus:border-[#B86B43]"
+                        placeholder="Dr. António Albuquerque"
+                        className="w-full px-4 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] placeholder:text-[#C4BDB3] focus:outline-none focus:border-[#B86B43] transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-[#1C1B18] mb-1.5">
-                        Telemóvel / WhatsApp *
+                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
+                        Telemóvel / WhatsApp <span className="text-[#B86B43]">*</span>
                       </label>
                       <input
                         type="tel"
@@ -2160,7 +2130,7 @@ export function App() {
                         value={formPhone}
                         onChange={(e) => setFormPhone(e.target.value)}
                         placeholder={CURRENCIES[currency].phonePlaceholder}
-                        className="w-full px-4 py-3 rounded bg-white border border-[#DFD8CC] text-sm focus:outline-none focus:border-[#B86B43]"
+                        className="w-full px-4 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] placeholder:text-[#C4BDB3] focus:outline-none focus:border-[#B86B43] transition-all"
                       />
                     </div>
                   </div>
@@ -2168,8 +2138,8 @@ export function App() {
                   {/* Email, Preferred Typology & Date */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-[#1C1B18] mb-1.5">
-                        E-mail Corporativo ou Pessoal *
+                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
+                        E-mail <span className="text-[#B86B43]">*</span>
                       </label>
                       <input
                         type="email"
@@ -2177,18 +2147,18 @@ export function App() {
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
                         placeholder="nome@dominio.com"
-                        className="w-full px-4 py-3 rounded bg-white border border-[#DFD8CC] text-sm focus:outline-none focus:border-[#B86B43]"
+                        className="w-full px-4 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] placeholder:text-[#C4BDB3] focus:outline-none focus:border-[#B86B43] transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-[#1C1B18] mb-1.5">
+                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
                         Tipologia de Interesse
                       </label>
                       <select
                         value={formTypology}
                         onChange={(e) => setFormTypology(e.target.value)}
-                        className="w-full px-3.5 py-3 rounded bg-white border border-[#DFD8CC] text-sm focus:outline-none focus:border-[#B86B43]"
+                        className="w-full px-3.5 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] focus:outline-none focus:border-[#B86B43] transition-all"
                       >
                         {TYPOLOGIES.map((t) => (
                           <option key={t.id} value={t.name}>
@@ -2202,25 +2172,26 @@ export function App() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-[#1C1B18] mb-1.5">
-                        Data Preferencial (Opcional)
+                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
+                        Data Preferencial
                       </label>
                       <input
                         type="date"
                         value={formDate}
                         onChange={(e) => setFormDate(e.target.value)}
-                        className="w-full px-3.5 py-3 rounded bg-white border border-[#DFD8CC] text-sm focus:outline-none focus:border-[#B86B43]"
+                        className="w-full px-3.5 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] focus:outline-none focus:border-[#B86B43] transition-all"
                       />
                     </div>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-4 px-6 rounded bg-[#B86B43] hover:bg-[#96522F] text-white font-mono-spec text-xs uppercase tracking-widest font-semibold transition-colors shadow-md cursor-pointer"
+                    className="w-full py-4 px-6 rounded-xl bg-[#B86B43] hover:bg-[#9E5B36] text-white font-semibold text-[13.5px] tracking-wide transition-all shadow-md hover:shadow-lg hover:shadow-[#B86B43]/20 cursor-pointer"
                   >
-                    Confirmar Solicitação & Desbloquear Tabela Exclusiva
+                    Confirmar Solicitação · Aceder à Tabela de Preços
                   </button>
                 </form>
+
               ) : (
                 <div className="py-8 px-4 text-center space-y-5">
                   <div className="w-14 h-14 rounded-full bg-[#2E5A3C]/15 text-[#2E5A3C] flex items-center justify-center mx-auto">
