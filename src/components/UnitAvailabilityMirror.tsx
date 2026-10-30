@@ -64,19 +64,19 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
   };
 
   return (
-    <section id="espelho-vendas" className="py-20 sm:py-28 bg-[#0E110E] text-[#F7F4EF] border-y border-white/10">
+    <section id="espelho-vendas" className="py-20 sm:py-28 bg-[#0A1128] text-[#F8FAFC] border-y border-white/10">
       <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-10">
         {/* Header & Live Sales Thermometer */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-white/10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#D9A86C]/15 border border-[#D9A86C]/30 text-[#D9A86C] font-mono-spec text-xs uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#C59A52]/15 border border-[#C59A52]/30 text-[#C59A52] font-mono-spec text-xs uppercase tracking-widest font-semibold">
               <Building2 className="w-3.5 h-3.5" />
               <span>FERRAMENTA EXCLUSIVA • ESPELHO DE VENDAS EM TEMPO REAL</span>
             </div>
             <h2 className="font-serif-editorial text-3xl sm:text-5xl text-white font-normal">
               Disponibilidade por Lote & Fração Autónoma
             </h2>
-            <p className="text-sm sm:text-base text-white/70 max-w-2xl">
+            <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed">
               Consulte em tempo real quais as Moradias (Villas) e Apartamentos disponíveis no
               Residencial Inara. Clique em qualquer unidade da grelha para inspecionar a posição
               solar, valor de tabela e estimativa de renda mensal.
@@ -113,7 +113,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 text-xs font-mono-spec text-white/60 mr-2">
-              <Filter className="w-3.5 h-3.5 text-[#D9A86C]" />
+              <Filter className="w-3.5 h-3.5 text-[#C59A52]" />
               FILTRAR SETOR:
             </span>
             {['all', 'Alameda Villas', 'Bloco A (Nascente)', 'Bloco B (Parque)'].map((b) => (
@@ -123,7 +123,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                 onClick={() => setBlockFilter(b)}
                 className={`px-3.5 py-2 rounded-lg text-xs font-mono-spec uppercase tracking-wider transition-all cursor-pointer ${
                   blockFilter === b
-                    ? 'bg-[#D9A86C] text-[#0E110E] font-bold shadow'
+                    ? 'bg-[#C59A52] text-[#0A1128] font-bold shadow'
                     : 'bg-white/5 text-white/75 border border-white/10 hover:border-white/30'
                 }`}
               >
@@ -142,9 +142,9 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                 key={st.id}
                 type="button"
                 onClick={() => setStatusFilter(st.id as typeof statusFilter)}
-                className={`px-3 py-1.5 rounded text-xs font-mono-spec transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-mono-spec transition-colors cursor-pointer ${
                   statusFilter === st.id
-                    ? 'bg-white text-[#0E110E] font-semibold'
+                    ? 'bg-[#C59A52] text-[#0A1128] font-bold shadow-sm'
                     : 'bg-white/5 text-white/65 hover:text-white'
                 }`}
               >
@@ -169,7 +169,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                   onClick={() => setSelectedUnit(unit)}
                   className={`text-left p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
                     isSelected
-                      ? 'bg-[#1B221C] border-[#D9A86C] ring-2 ring-[#D9A86C]/40 shadow-xl'
+                      ? 'bg-[#0F1E36] border-[#C59A52] ring-2 ring-[#C59A52]/40 shadow-xl'
                       : isSold
                       ? 'bg-white/[0.02] border-white/10 opacity-60 hover:opacity-90'
                       : 'bg-white/[0.05] border-white/10 hover:border-white/30 hover:bg-white/[0.08]'
@@ -177,7 +177,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                 >
                   <div className="flex items-start justify-between gap-2 w-full">
                     <div>
-                      <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
+                      <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#C59A52] block font-medium">
                         {unit.block}
                       </span>
                       <h3 className="font-serif-editorial text-2xl text-white font-semibold mt-0.5">
@@ -207,11 +207,11 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                       <span className="font-mono-spec text-[10px] text-white/50 block">
                         VALOR DE TABELA
                       </span>
-                      <strong className="font-mono-spec text-sm text-[#D9A86C]">
+                      <strong className="font-mono-spec text-sm text-[#C59A52]">
                         {unit.status === 'sold' ? 'Unidade Comercializada' : formatPrice(unit.priceEUR, currency)}
                       </strong>
                     </div>
-                    <span className="text-xs font-mono-spec text-white/70 underline">
+                    <span className="text-xs font-mono-spec text-[#C59A52] underline">
                       Ver Ficha →
                     </span>
                   </div>
@@ -221,16 +221,16 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
           </div>
 
           {/* Right 5 Columns: Sticky Detailed Unit Dossier */}
-          <div className="lg:col-span-5 bg-[#161B17] rounded-2xl border border-[#D9A86C]/40 overflow-hidden shadow-2xl sticky top-24">
+          <div className="lg:col-span-5 bg-[#0F1E36] rounded-2xl border border-[#C59A52]/40 overflow-hidden shadow-2xl sticky top-24">
             <div className="relative h-56 overflow-hidden">
               <img
                 src={selectedUnit.image}
                 alt={selectedUnit.code}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#161B17] via-[#161B17]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F1E36] via-[#0F1E36]/30 to-transparent" />
               <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <span className="px-3 py-1 rounded bg-black/70 backdrop-blur-md text-[#D9A86C] font-mono-spec text-xs font-semibold">
+                <span className="px-3 py-1 rounded bg-[#0A1128]/80 backdrop-blur-md text-[#C59A52] font-mono-spec text-xs font-semibold">
                   {selectedUnit.block}
                 </span>
                 {getStatusBadge(selectedUnit.status)}
@@ -247,7 +247,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
 
             <div className="p-6 space-y-6">
               <p className="text-sm text-white/80 leading-relaxed bg-white/5 p-3.5 rounded-lg border border-white/10">
-                <strong className="text-[#D9A86C] block text-xs font-mono-spec uppercase mb-1">
+                <strong className="text-[#C59A52] block text-xs font-mono-spec uppercase mb-1">
                   Diferencial desta Fração:
                 </strong>
                 {selectedUnit.highlight}
@@ -256,7 +256,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
               {/* Specs Grid */}
               <div className="grid grid-cols-2 gap-3 font-mono-spec text-xs">
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center gap-3">
-                  <Maximize2 className="w-4 h-4 text-[#D9A86C] shrink-0" />
+                  <Maximize2 className="w-4 h-4 text-[#C59A52] shrink-0" />
                   <div>
                     <span className="text-[10px] text-white/50 block">ÁREA PRIVATIVA + EXT.</span>
                     <strong className="text-white">
@@ -266,7 +266,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                 </div>
 
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center gap-3">
-                  <Sun className="w-4 h-4 text-[#D9A86C] shrink-0" />
+                  <Sun className="w-4 h-4 text-[#C59A52] shrink-0" />
                   <div>
                     <span className="text-[10px] text-white/50 block">ORIENTAÇÃO SOLAR</span>
                     <strong className="text-white">{selectedUnit.solar}</strong>
@@ -274,7 +274,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                 </div>
 
                 <div className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center gap-3">
-                  <Car className="w-4 h-4 text-[#D9A86C] shrink-0" />
+                  <Car className="w-4 h-4 text-[#C59A52] shrink-0" />
                   <div>
                     <span className="text-[10px] text-white/50 block">ESTACIONAMENTO</span>
                     <strong className="text-white">{selectedUnit.parkingSpots} Vagas Box EV</strong>
@@ -293,12 +293,12 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
               </div>
 
               {/* Financial Box */}
-              <div className="p-4 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-[#0A1128]/80 border border-white/10 flex items-center justify-between">
                 <div>
                   <span className="font-mono-spec text-[10px] uppercase tracking-wider text-white/55 block">
                     PREÇO DE LANÇAMENTO DA UNIDADE
                   </span>
-                  <strong className="font-serif-editorial text-3xl text-[#D9A86C]">
+                  <strong className="font-serif-editorial text-3xl text-[#C59A52]">
                     {formatPrice(selectedUnit.priceEUR, currency)}
                   </strong>
                 </div>
@@ -315,7 +315,7 @@ export const UnitAvailabilityMirror: React.FC<UnitAvailabilityMirrorProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectUnitForReservation(selectedUnit)}
-                  className="w-full py-4 px-5 rounded-lg bg-[#B86B43] hover:bg-[#96522F] text-white font-mono-spec text-xs uppercase tracking-widest font-semibold transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  className="w-full py-4 px-5 rounded-lg bg-[#C59A52] hover:bg-[#B0853E] text-[#0A1128] font-mono-spec text-xs uppercase tracking-widest font-bold transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>

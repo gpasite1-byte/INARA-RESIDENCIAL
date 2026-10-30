@@ -31,6 +31,9 @@ dist-ssr
 # Raw assets and helper scripts
 *.pdf
 IMAGENS INARA/
+Imagem Vulante/
+www.duckbillcookies.com.br/
+www.duckbillcookies.com.br.zip
 extract_pdf.js
 extract_pdf.cjs
 extracted_presentation_text.txt

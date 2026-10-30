@@ -40,16 +40,16 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
     <section id="configurador" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
       <div className="space-y-12">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-[#DFD8CC] pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-[#E2E8F0] pb-8">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#B86B43]/15 text-[#B86B43] font-mono-spec text-xs uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#C59A52]/15 text-[#C59A52] font-mono-spec text-xs uppercase tracking-widest font-medium">
               <Sliders className="w-3.5 h-3.5" />
               <span>PROGRAMA INARA TAILOR-MADE • PERSONALIZAÇÃO EM OBRA</span>
             </div>
-            <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#1C1B18] font-normal">
+            <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#0F172A] font-normal">
               Configure os Acabamentos da Sua Residência
             </h2>
-            <p className="text-sm sm:text-base text-[#666159] max-w-2xl">
+            <p className="text-sm sm:text-base text-[#475569] max-w-2xl leading-relaxed">
               No Residencial Inara, entregamos a sua casa pronta a habitar à sua medida. Escolha a
               base da tipologia, personalize os revestimentos naturais, o kit de lazer no terraço e
               a domótica integrada — sem obras pós-entrega.
@@ -57,7 +57,7 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
           </div>
 
           {/* Step 0: Base Typology Selector */}
-          <div className="bg-[#EFEAE1] p-1.5 rounded-xl border border-[#DFD8CC] flex flex-wrap gap-1.5">
+          <div className="bg-[#F1F5F9] p-1.5 rounded-xl border border-[#E2E8F0] flex flex-wrap gap-1.5">
             {TYPOLOGIES.map((t) => {
               const active = selectedTypology.id === t.id;
               return (
@@ -66,8 +66,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                   type="button"
                   onClick={() => setSelectedTypology(t)}
                   className={`px-3.5 py-2 rounded-lg text-xs font-mono-spec uppercase tracking-wider transition-all cursor-pointer ${active
-                    ? 'bg-[#1C1B18] text-[#F7F4EF] font-semibold shadow'
-                    : 'text-[#666159] hover:text-[#1C1B18]'
+                    ? 'bg-[#0A1128] text-white font-semibold shadow'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
                     }`}
                 >
                   {t.code}
@@ -81,26 +81,26 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left 7 Columns: Live Visual Preview & Material Moodboard */}
           <div className="lg:col-span-7 space-y-4 lg:sticky lg:top-24">
-            <div className="relative rounded-2xl overflow-hidden border border-[#DFD8CC] shadow-xl bg-[#151814] aspect-[16/10]">
+            <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-xl bg-[#0A1128] aspect-[16/10]">
               <img
                 src={
                   activePreviewMode === 'interior'
                     ? selectedFloor.previewImage
                     : selectedOutdoor.previewImage
                 }
-                alt=" Simulação de Acabamentos Residencial Inara"
+                alt="Simulação de Acabamentos Residencial Inara"
                 className="w-full h-full object-cover transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/90 via-transparent to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/95 via-transparent to-black/30" />
 
               {/* Top Toggle: Interior vs Terraço */}
               <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 bg-black/65 backdrop-blur-md p-1 rounded-lg border border-white/15">
+                <div className="flex items-center gap-2 bg-[#0A1128]/80 backdrop-blur-md p-1 rounded-lg border border-white/15">
                   <button
                     type="button"
                     onClick={() => setActivePreviewMode('interior')}
                     className={`px-3 py-1.5 rounded text-xs font-mono-spec uppercase transition-colors cursor-pointer ${activePreviewMode === 'interior'
-                      ? 'bg-[#B86B43] text-white'
+                      ? 'bg-[#C59A52] text-[#0A1128] font-bold shadow-sm'
                       : 'text-white/75 hover:text-white'
                       }`}
                   >
@@ -110,7 +110,7 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                     type="button"
                     onClick={() => setActivePreviewMode('outdoor')}
                     className={`px-3 py-1.5 rounded text-xs font-mono-spec uppercase transition-colors cursor-pointer ${activePreviewMode === 'outdoor'
-                      ? 'bg-[#B86B43] text-white'
+                      ? 'bg-[#C59A52] text-[#0A1128] font-bold shadow-sm'
                       : 'text-white/75 hover:text-white'
                       }`}
                   >
@@ -118,20 +118,20 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                   </button>
                 </div>
 
-                <span className="px-3 py-1.5 rounded bg-black/65 backdrop-blur-md text-[#D9A86C] font-mono-spec text-xs border border-white/15 hidden sm:inline-block">
+                <span className="px-3 py-1.5 rounded bg-[#0A1128]/80 backdrop-blur-md text-[#D4AF37] font-mono-spec text-xs border border-white/15 hidden sm:inline-block">
                   {selectedTypology.name} ({selectedTypology.totalArea} m²)
                 </span>
               </div>
 
               {/* Bottom Active Material Swatches Overlay */}
-              <div className="absolute bottom-4 left-4 right-4 bg-[#151814]/85 backdrop-blur-md p-4 rounded-xl border border-white/15 text-white grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="absolute bottom-4 left-4 right-4 bg-[#0A1128]/90 backdrop-blur-md p-4 rounded-xl border border-white/15 text-white grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="flex items-center gap-2.5">
                   <span
                     className="w-7 h-7 rounded-full border border-white/40 shrink-0"
                     style={{ backgroundColor: selectedFloor.swatchColor }}
                   />
                   <div className="overflow-hidden">
-                    <span className="text-[10px] font-mono-spec text-[#D9A86C] block">
+                    <span className="text-[10px] font-mono-spec text-[#D4AF37] block">
                       PISO & REVESTIMENTO
                     </span>
                     <strong className="text-xs truncate block">{selectedFloor.name}</strong>
@@ -144,7 +144,7 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                     style={{ backgroundColor: selectedOutdoor.swatchColor }}
                   />
                   <div className="overflow-hidden">
-                    <span className="text-[10px] font-mono-spec text-[#D9A86C] block">
+                    <span className="text-[10px] font-mono-spec text-[#D4AF37] block">
                       LAZER NO TERRAÇO
                     </span>
                     <strong className="text-xs truncate block">{selectedOutdoor.name}</strong>
@@ -157,7 +157,7 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                     style={{ backgroundColor: selectedSmart.swatchColor }}
                   />
                   <div className="overflow-hidden">
-                    <span className="text-[10px] font-mono-spec text-[#D9A86C] block">
+                    <span className="text-[10px] font-mono-spec text-[#D4AF37] block">
                       DOMÓTICA & ENERGIA
                     </span>
                     <strong className="text-xs truncate block">{selectedSmart.name}</strong>
@@ -167,9 +167,9 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
             </div>
 
             {/* Live Budget Summary Bar */}
-            <div className="bg-[#151814] text-[#F7F4EF] p-6 rounded-2xl border border-[#DFD8CC] flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-lg">
+            <div className="bg-[#0A1128] text-[#F8FAFC] p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xl">
               <div className="space-y-1">
-                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
+                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D4AF37] block">
                   ORÇAMENTO CHAVE NA MÃO (UNIDADE + PERSONALIZAÇÃO)
                 </span>
                 <div className="flex items-baseline gap-3">
@@ -191,7 +191,7 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
               <button
                 type="button"
                 onClick={handleSendConfiguration}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#B86B43] hover:bg-[#96522F] text-white font-mono-spec text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#C59A52] hover:bg-[#B0853E] text-[#0A1128] font-mono-spec text-xs uppercase tracking-wider font-bold transition-all shadow-md hover:shadow-lg cursor-pointer shrink-0"
               >
                 <span>Guardar Configuração & Pedir Proposta</span>
                 <ArrowUpRight className="w-4 h-4" />
@@ -202,8 +202,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
           {/* Right 5 Columns: 3-Step Interactive Finishings Selector */}
           <div className="lg:col-span-5 space-y-6">
             {/* Step 1: Flooring & Interior Wood */}
-            <div className="bg-[#EFEAE1] p-5 rounded-xl border border-[#DFD8CC] space-y-3.5">
-              <div className="flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider text-[#B86B43] font-semibold">
+            <div className="bg-[#F8FAFC] p-5 rounded-xl border border-[#E2E8F0] space-y-3.5 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider text-[#C59A52] font-semibold">
                 <Layers className="w-4 h-4" />
                 <span>PASSO 1 • PISO SOCIAL & MADEIRAS NATURAIS</span>
               </div>
@@ -220,8 +220,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                         setActivePreviewMode('interior');
                       }}
                       className={`w-full text-left p-3.5 rounded-lg border transition-all cursor-pointer flex items-start gap-3 ${active
-                        ? 'bg-white border-[#B86B43] ring-2 ring-[#B86B43]/25 shadow-sm'
-                        : 'bg-[#F7F4EF] border-[#DFD8CC] hover:border-[#1C1B18]'
+                        ? 'bg-white border-[#C59A52] ring-2 ring-[#C59A52]/25 shadow-sm'
+                        : 'bg-white/80 border-[#E2E8F0] hover:border-[#CBD5E1]'
                         }`}
                     >
                       <span
@@ -232,17 +232,17 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                       </span>
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <strong className="text-sm text-[#1C1B18]">{opt.name}</strong>
-                          <span className="font-mono-spec text-xs font-semibold text-[#B86B43]">
+                          <strong className="text-sm text-[#0F172A]">{opt.name}</strong>
+                          <span className="font-mono-spec text-xs font-semibold text-[#C59A52]">
                             {opt.priceDeltaEUR === 0
                               ? 'Incluído'
                               : `+ ${formatPrice(opt.priceDeltaEUR, currency)}`}
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono-spec text-[#666159] block">
+                        <span className="text-[11px] font-mono-spec text-[#64748B] block">
                           {opt.material}
                         </span>
-                        <p className="text-xs text-[#666159] mt-1">{opt.description}</p>
+                        <p className="text-xs text-[#64748B] mt-1">{opt.description}</p>
                       </div>
                     </button>
                   );
@@ -251,8 +251,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
             </div>
 
             {/* Step 2: Outdoor Terrace & Pool/Jacuzzi Kit */}
-            <div className="bg-[#EFEAE1] p-5 rounded-xl border border-[#DFD8CC] space-y-3.5">
-              <div className="flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider text-[#B86B43] font-semibold">
+            <div className="bg-[#F8FAFC] p-5 rounded-xl border border-[#E2E8F0] space-y-3.5 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider text-[#C59A52] font-semibold">
                 <Sun className="w-4 h-4" />
                 <span>PASSO 2 • KIT LAZER PRIVATIVO NO TERRAÇO / JARDIM</span>
               </div>
@@ -269,8 +269,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                         setActivePreviewMode('outdoor');
                       }}
                       className={`w-full text-left p-3.5 rounded-lg border transition-all cursor-pointer flex items-start gap-3 ${active
-                        ? 'bg-white border-[#B86B43] ring-2 ring-[#B86B43]/25 shadow-sm'
-                        : 'bg-[#F7F4EF] border-[#DFD8CC] hover:border-[#1C1B18]'
+                        ? 'bg-white border-[#C59A52] ring-2 ring-[#C59A52]/25 shadow-sm'
+                        : 'bg-white/80 border-[#E2E8F0] hover:border-[#CBD5E1]'
                         }`}
                     >
                       <span
@@ -281,17 +281,17 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                       </span>
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <strong className="text-sm text-[#1C1B18]">{opt.name}</strong>
-                          <span className="font-mono-spec text-xs font-semibold text-[#B86B43]">
+                          <strong className="text-sm text-[#0F172A]">{opt.name}</strong>
+                          <span className="font-mono-spec text-xs font-semibold text-[#C59A52]">
                             {opt.priceDeltaEUR === 0
                               ? 'Incluído'
                               : `+ ${formatPrice(opt.priceDeltaEUR, currency)}`}
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono-spec text-[#666159] block">
+                        <span className="text-[11px] font-mono-spec text-[#64748B] block">
                           {opt.material}
                         </span>
-                        <p className="text-xs text-[#666159] mt-1">{opt.description}</p>
+                        <p className="text-xs text-[#64748B] mt-1">{opt.description}</p>
                       </div>
                     </button>
                   );
@@ -300,8 +300,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
             </div>
 
             {/* Step 3: Domotics & Solar Energy */}
-            <div className="bg-[#EFEAE1] p-5 rounded-xl border border-[#DFD8CC] space-y-3.5">
-              <div className="flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider text-[#B86B43] font-semibold">
+            <div className="bg-[#F8FAFC] p-5 rounded-xl border border-[#E2E8F0] space-y-3.5 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-mono-spec uppercase tracking-wider text-[#C59A52] font-semibold">
                 <Cpu className="w-4 h-4" />
                 <span>PASSO 3 • AUTOMAÇÃO KNX & EFICIÊNCIA SOLAR</span>
               </div>
@@ -315,8 +315,8 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                       type="button"
                       onClick={() => setSelectedSmart(opt)}
                       className={`w-full text-left p-3.5 rounded-lg border transition-all cursor-pointer flex items-start gap-3 ${active
-                        ? 'bg-white border-[#B86B43] ring-2 ring-[#B86B43]/25 shadow-sm'
-                        : 'bg-[#F7F4EF] border-[#DFD8CC] hover:border-[#1C1B18]'
+                        ? 'bg-white border-[#C59A52] ring-2 ring-[#C59A52]/25 shadow-sm'
+                        : 'bg-white/80 border-[#E2E8F0] hover:border-[#CBD5E1]'
                         }`}
                     >
                       <span
@@ -327,17 +327,17 @@ export const HomeConfiguratorSection: React.FC<HomeConfiguratorSectionProps> = (
                       </span>
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <strong className="text-sm text-[#1C1B18]">{opt.name}</strong>
-                          <span className="font-mono-spec text-xs font-semibold text-[#B86B43]">
+                          <strong className="text-sm text-[#0F172A]">{opt.name}</strong>
+                          <span className="font-mono-spec text-xs font-semibold text-[#C59A52]">
                             {opt.priceDeltaEUR === 0
                               ? 'Incluído'
                               : `+ ${formatPrice(opt.priceDeltaEUR, currency)}`}
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono-spec text-[#666159] block">
+                        <span className="text-[11px] font-mono-spec text-[#64748B] block">
                           {opt.material}
                         </span>
-                        <p className="text-xs text-[#666159] mt-1">{opt.description}</p>
+                        <p className="text-xs text-[#64748B] mt-1">{opt.description}</p>
                       </div>
                     </button>
                   );

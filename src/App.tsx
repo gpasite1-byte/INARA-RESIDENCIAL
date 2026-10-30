@@ -1,218 +1,230 @@
 import React, { useState, useEffect } from 'react';
 import {
   ShieldCheck,
-  Trees,
   Sparkles,
   MapPin,
   Calendar,
   Download,
   ArrowUpRight,
   CheckCircle2,
-  Compass,
-  Maximize2,
-  Car,
-  BedDouble,
-  Bath,
-  Sun,
   Phone,
   Clock,
   Layers,
-  Eye,
-  Lightbulb,
   ChevronRight,
   ChevronLeft,
-  ChevronDown,
   X,
   Building,
-  Lock,
-  Wifi,
-  Zap,
-  Droplets,
   Menu,
-  Play,
-  Film,
   MessageCircle,
+  Landmark,
+  Check,
+  Send,
+  Eye,
+  Key,
+  Sun,
+  Moon,
+  Play,
+  Pause,
+  Maximize2,
+  ArrowRight,
+  Compass,
+  Award,
 } from 'lucide-react';
 import {
   CURRENCIES,
   CurrencyCode,
-  GALLERY_ITEMS,
-  GalleryItem,
-  MASTERPLAN_HOTSPOTS,
-  MasterplanHotspot,
   TYPOLOGIES,
   Typology,
   RoomSpec,
-  MASTERPLAN_VIDEO,
-  POOL_VIDEO,
-  INTERIOR_DECORADO_IMAGES,
+  PROJECT_INFO,
 } from './data/inaraData';
 import { formatPrice } from './utils/formatCurrency';
 import { ArchitecturalFloorplanSVG } from './components/ArchitecturalFloorplanSVG';
-import { HomeConfiguratorSection } from './components/HomeConfiguratorSection';
 import { BrochureModal } from './components/BrochureModal';
 import { StrategyAdvisorModal } from './components/StrategyAdvisorModal';
 
-interface HeroScene {
+// Clean Hero Cover Scenes (100% free of printed text, watermarks, or typography)
+interface HeroCoverScene {
+  id: string;
+  title: string;
+  period: string;
+  src: string;
+  type: 'image' | 'video';
+  badge: string;
+  description: string;
+}
+
+const HERO_COVER_SCENES: HeroCoverScene[] = [
+  {
+    id: 'fachada-dourada',
+    title: 'Fachada Principal ao Pôr-do-Sol',
+    period: 'Fachada & Alameda',
+    src: '/media/showcase/inara-fachada-dourada.jpg',
+    type: 'image',
+    badge: '30 Moradias Duplex',
+    description: 'Arquitetura moderna com volumetria elegante, caixilharia ampla e acabamentos contemporâneos.',
+  },
+  {
+    id: 'piscinas-privadas',
+    title: 'Piscinas Privativas & Jardim Posterior',
+    period: 'Piscinas Privadas',
+    src: '/media/cover/inara-pools-twilight.jpg',
+    type: 'image',
+    badge: 'Lazer Individual',
+    description: 'Cada uma das 30 moradias possui a sua piscina privativa, deck solarium e área gourmet no jardim.',
+  },
+  {
+    id: 'clube-lazer',
+    title: 'Clube Privativo no Lote 31',
+    period: 'Clube & Solarium',
+    src: '/media/showcase/inara-clube-piscina.jpg',
+    type: 'image',
+    badge: '767 m² de Lazer',
+    description: 'Piscina de borda infinita, espaço lounge, quadras polidesportivas e portaria com segurança 24h.',
+  },
+  {
+    id: 'video-tour-3d',
+    title: 'Tour Arquitetônico 3D da Moradia',
+    period: 'Vídeo 3D Walkthrough',
+    src: '/media/videos/house-layout-reveal-loop.mp4',
+    type: 'video',
+    badge: 'Animação 3D HD',
+    description: 'Passeio virtual 3D revelando a planta técnica, distribuição dos 2 pisos e integração espacial.',
+  },
+];
+
+// Official Campaign Graphic Assets (The 5 Key Flyers + Official Collateral)
+interface CampaignAsset {
   id: string;
   title: string;
   subtitle: string;
   src: string;
+  categoryLabel: string;
   badge: string;
-  lighting: string;
+  aspect: string;
 }
 
-const HERO_SCENES: HeroScene[] = [
+const CAMPAIGN_ASSETS: CampaignAsset[] = [
   {
-    id: 'panoramic-sunset',
-    title: 'Entrada Monumental & Vista Panorâmica',
-    subtitle: 'Portaria Inara Residence, Clube Social, campo desportivo e pôr-do-sol',
-    src: '/media/hero/inara-main-hero.png',
+    id: 'localizacao-talatona',
+    title: 'Morar Bem Também É Estar Bem Localizado',
+    subtitle: 'Talatona: Via A4A (Estrada do Rio Cambambe). Próximo de escolas internacionais, Belas Shopping e vias rápidas.',
+    src: '/media/campaign/Post Inara 01.png',
+    categoryLabel: 'Pilar 01 • Localização',
+    badge: 'Talatona Nobre',
+    aspect: 'aspect-[4/5]',
+  },
+  {
+    id: 'familia-conforto',
+    title: 'Viver Bem Não É Sorte, É Uma Escolha',
+    subtitle: 'Ambiente familiar e exclusivo. 30 moradias T4 Duplex com 4 suítes, acabamentos de luxo e piscina privativa.',
+    src: '/media/campaign/Post Inara 02.png',
+    categoryLabel: 'Pilar 02 • Família & Lazer',
+    badge: 'Sonho Realizado',
+    aspect: 'aspect-[4/5]',
+  },
+  {
+    id: 'standard-bank',
+    title: 'Sabia Que...? Financiamento Standard Bank Angola',
+    subtitle: 'Financiamento imobiliário facilitado pelo Standard Bank Angola, até 80% do valor e até 25 anos de amortização.',
+    src: '/media/campaign/Post Inara 03.png',
+    categoryLabel: 'Pilar 03 • Parceria Bancária',
+    badge: 'Crédito à Habitação',
+    aspect: 'aspect-square',
+  },
+  {
+    id: 'hero-drone',
+    title: 'O Que Está a Nascer Aqui Vai Surpreender-te',
+    subtitle: 'Grande vista aérea do canteiro de obras de 10.000 m² do Residencial Inara em Talatona, Luanda.',
+    src: '/media/campaign/Inara Residencial.png',
+    categoryLabel: 'Pilar 04 • A Obra Real',
     badge: 'Capa Oficial',
-    lighting: 'Entardecer Panorâmico',
+    aspect: 'aspect-[3/4]',
   },
   {
-    id: 'twilight',
-    title: 'Crepúsculo & Iluminação das Moradias',
-    subtitle: 'Fachadas iluminadas, carros de luxo e atmosfera dourada',
-    src: '/media/hero/inara-hero-twilight.jpg',
-    badge: 'Hora Dourada 3D',
-    lighting: 'Noturno • Cénico',
+    id: 'chaves-futuro',
+    title: 'Sua Nova Vida Começa Aqui!',
+    subtitle: 'Dê o primeiro passo para garantir a sua moradia de prestígio. Agende já a sua visita ao stand de vendas.',
+    src: '/media/campaign/Post Inara 04.png',
+    categoryLabel: 'Pilar 05 • Visita ao Stand',
+    badge: 'Chave na Mão',
+    aspect: 'aspect-[4/5]',
   },
   {
-    id: 'daylight',
-    title: 'Dia Ensolarado & Brises Cumaru',
-    subtitle: 'Brises de madeira, palmeiras reais e céu azul límpido',
-    src: '/media/hero/inara-hero-daylight.jpg',
-    badge: 'Luz Natural 100%',
-    lighting: 'Diurno • Sol Pleno',
+    id: 'capa-estilo',
+    title: 'Mais do que uma Casa, um Novo Estilo de Vida',
+    subtitle: '30 moradias unifamiliares T4 Duplex na Via A4A em Talatona, com clube de lazer e condomínio fechado.',
+    src: '/media/campaign/Capa Hinara 01.png',
+    categoryLabel: 'Estilo de Vida',
+    badge: '30 Moradias T4',
+    aspect: 'aspect-[3/4]',
   },
   {
-    id: 'perspective',
-    title: 'Perspectiva da Alameda Interna',
-    subtitle: 'Alameda pavimentada, relvados impecáveis e arborização',
-    src: '/media/hero/inara-hero-perspective.jpg',
-    badge: 'Paisagismo & Vias',
-    lighting: 'Perspectiva Ampla',
+    id: 'obra-etapas',
+    title: 'Evolução das Obras em 4 Etapas',
+    subtitle: 'Painel oficial de acompanhamento das fundações, alvenarias e estruturas das 30 moradias.',
+    src: '/media/campaign/Inara Residencial 01.png',
+    categoryLabel: 'Evolução da Obra',
+    badge: 'Status Construtivo',
+    aspect: 'aspect-square',
   },
   {
-    id: 'clubhouse',
-    title: 'Portaria & Clube Privado Lote 31',
-    subtitle: 'Entrada monumental, torre travertino e muxarabis',
-    src: '/media/hero/inara-hero-clubhouse.jpg',
-    badge: 'Acesso Nobre',
-    lighting: 'Fachada Principal',
+    id: 'sonho-realidade',
+    title: 'Transforme o Sonho da Casa Própria em Realidade',
+    subtitle: 'Construa um futuro de conforto, estabilidade e valorização patrimonial no coração de Talatona.',
+    src: '/media/campaign/Post Inara 05.png',
+    categoryLabel: 'Conquista Definitiva',
+    badge: 'Realização',
+    aspect: 'aspect-square',
   },
 ];
 
-export function App() {
-  // Market & Currency Customization State
+// Official Phone Contacts
+const OFFICIAL_PHONES = [
+  { display: '+244 931 943 828', clean: '244931943828' },
+  { display: '+244 923 436 077', clean: '244923436077' },
+  { display: '+244 931 893 859', clean: '244931893859' },
+];
+
+export default function App() {
   const [currency, setCurrency] = useState<CurrencyCode>('AOA');
   const [customCity, setCustomCity] = useState<string>('Talatona • Luanda');
-
-  // Mobile Menu State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Hero Interactive Perspective State
-  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
-  const [heroAutoPlay, setHeroAutoPlay] = useState(false);
+  // Clean Hero Cover Scene Selector
+  const [activeCoverIdx, setActiveCoverIdx] = useState(0);
 
-  useEffect(() => {
-    if (!heroAutoPlay) return;
-    const timer = setInterval(() => {
-      setActiveHeroIndex((prev) => (prev + 1) % HERO_SCENES.length);
-    }, 6500);
-    return () => clearInterval(timer);
-  }, [heroAutoPlay]);
+  // Lightbox State for campaign artwork
+  const [lightboxAsset, setLightboxAsset] = useState<CampaignAsset | null>(null);
 
-  // Concept Section Daylight / Twilight Toggle
-  const [conceptNightMode, setConceptNightMode] = useState(false);
-
-  // Masterplan Interactive State
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'seguranca' | 'lazer' | 'natureza'>('all');
-  const [activeHotspot, setActiveHotspot] = useState<MasterplanHotspot>(MASTERPLAN_HOTSPOTS[1]); // Default to Pool Club
-  const [masterplanMode, setMasterplanMode] = useState<'map' | 'video'>('map');
-  const [hotspotVideoActive, setHotspotVideoActive] = useState(false);
-
-  // Continuous Smooth Scroll Navigation State
-  type SectionId = 'hero' | 'conceito' | 'implantacao' | 'plantas' | 'lazer' | 'localizacao';
-  const [activeSection, setActiveSection] = useState<SectionId>('hero');
-
-  const scrollToSection = (sectionId: SectionId | string) => {
-    setMobileMenuOpen(false);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const headerOffset = 90;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sectionIds: SectionId[] = ['hero', 'conceito', 'implantacao', 'plantas', 'lazer', 'localizacao'];
-      const scrollPosition = window.scrollY + 160;
-
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sectionIds[i]);
-        if (el && el.offsetTop <= scrollPosition) {
-          setActiveSection(sectionIds[i]);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Typology & Floorplan Selector State
-  type ViewMode = 'blueprint' | 'video' | 'insolacao' | 'interior' | 'exterior';
-  const [activeTypology, setActiveTypology] = useState<Typology>(TYPOLOGIES[0]); // Default T4 Opção A
-  const [viewMode, setViewMode] = useState<ViewMode>('blueprint');
-  const [activeRoom, setActiveRoom] = useState<RoomSpec>(TYPOLOGIES[0].rooms[0]);
-  const [downPaymentPercent, setDownPaymentPercent] = useState<number>(20);
-
-  // Gallery Lightbox State
-  const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
-
-  // Interior Decorado Gallery State
-  const [decoradoVisibleCount, setDecoradoVisibleCount] = useState<number>(12);
-  const [selectedDecoradoIndex, setSelectedDecoradoIndex] = useState<number | null>(null);
-
-  // Fullscreen Video Modal State
-  const [videoModal, setVideoModal] = useState<{ title: string; url: string; subtitle?: string } | null>(null);
-
-  // Modals State
+  // Modals
   const [isBrochureOpen, setIsBrochureOpen] = useState(false);
   const [isStrategyOpen, setIsStrategyOpen] = useState(false);
 
-  // Private Visit Lead Form State
+  // Architectural Floorplan Selector
+  const [activeTypology, setActiveTypology] = useState<Typology>(TYPOLOGIES[0]);
+  const [activeRoom, setActiveRoom] = useState<RoomSpec>(TYPOLOGIES[0].rooms[0]);
+
+  // Standard Bank Financing Calculator State
+  const [downPaymentPct, setDownPaymentPct] = useState<number>(20);
+  const [mortgageYears, setMortgageYears] = useState<number>(20);
+
+  // Lead Visit Form State
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('');
   const [formEmail, setFormEmail] = useState('');
-  const [formTypology, setFormTypology] = useState(TYPOLOGIES[0].name);
-  const [formVisitType, setFormVisitType] = useState<'presencial' | 'video' | 'tabela'>('presencial');
   const [formDate, setFormDate] = useState('');
+  const [formMessage, setFormMessage] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleSelectTypology = (typo: Typology) => {
-    setActiveTypology(typo);
-    setActiveRoom(typo.rooms[0]);
-  };
-
-  const handleRequestTypologyProposal = (typo: Typology) => {
-    setFormTypology(typo.name);
-    scrollToSection('localizacao');
-  };
-
-  const handleSaveConfigurationToLead = (summaryText: string, typologyName: string) => {
-    setFormTypology(`${typologyName} (Personalizada)`);
-    scrollToSection('localizacao');
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = -90;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -220,242 +232,261 @@ export function App() {
     setFormSubmitted(true);
   };
 
-  const filteredHotspots =
-    selectedCategory === 'all'
-      ? MASTERPLAN_HOTSPOTS
-      : MASTERPLAN_HOTSPOTS.filter((h) => h.category === selectedCategory);
-
-  // Financial calculation for selected typology
-  const downPaymentAmount = Math.round((activeTypology.basePriceEUR * downPaymentPercent) / 100);
-  const constructionAmount = Math.round(activeTypology.basePriceEUR * 0.3);
-  const finalBalanceAmount = activeTypology.basePriceEUR - downPaymentAmount - constructionAmount;
+  // Financing math
+  const basePriceEUR = activeTypology.basePriceEUR;
+  const downPaymentAmountEUR = Math.round((basePriceEUR * downPaymentPct) / 100);
+  const loanAmountEUR = basePriceEUR - downPaymentAmountEUR;
+  const monthlyInterestRate = 0.05 / 12;
+  const totalMonths = mortgageYears * 12;
+  const monthlyPaymentEUR =
+    loanAmountEUR > 0
+      ? Math.round(
+          (loanAmountEUR *
+            (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalMonths))) /
+            (Math.pow(1 + monthlyInterestRate, totalMonths) - 1)
+        )
+      : 0;
 
   return (
-    <div className="min-h-screen bg-[#F7F4EF] text-[#1C1B18] relative">
-      {/* Top Luxury Announcement & Quick Contact Bar */}
-      <div className="bg-[#0F1210] text-[#F7F4EF] border-b border-white/[0.07] px-4 py-2">
-        <div className="max-w-[1380px] mx-auto flex flex-wrap items-center justify-between gap-3">
-          {/* Status Badge & Official Location */}
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-[#B86B43] text-white font-mono-spec text-[9.5px] uppercase tracking-[0.18em] font-medium">
-              <Sparkles className="w-2.5 h-2.5" /> Lançamento Exclusivo
+    <div className="min-h-screen bg-white text-[#0F172A] antialiased selection:bg-[#0052CC]/20 selection:text-[#0052CC] font-sans">
+      {/* =====================================================================
+          TOP BAR (Finest Investment Partners & Direct Official Contacts)
+      ===================================================================== */}
+      <div className="bg-gradient-to-r from-[#0052CC] via-[#0066FF] to-[#3B0764] text-white px-4 py-2.5 text-xs">
+        <div className="max-w-[1380px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="flex items-center gap-3 font-medium">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-bold tracking-wide">
+              <Sparkles className="w-3 h-3 text-[#00D2FF]" />
+              LANÇAMENTO OFICIAL
             </span>
-            <span className="text-white/50 hidden md:inline font-mono-spec text-[10.5px] tracking-wide">
-              Via A4A, Talatona · 30 moradias T4 Duplex · Clube privativo Lote 31
+            <span className="hidden md:inline text-white/95">
+              30 Moradias T4 Duplex de Alto Padrão em Talatona • Financiamento <strong>Standard Bank Angola</strong>
             </span>
           </div>
 
-          <div className="flex items-center gap-5 ml-auto">
-            {/* Direct Phone / Contact */}
-            <a
-              href="tel:+244931893859"
-              className="hidden sm:inline-flex items-center gap-1.5 text-white/55 hover:text-white/85 font-mono-spec text-[10.5px] tracking-wide transition-colors"
-              title="Ligar para o Gabinete de Vendas"
-            >
-              <Phone className="w-2.5 h-2.5 text-[#B86B43]" />
-              <span>+244 931 893 859</span>
-            </a>
+          <div className="flex items-center gap-4 text-[11.5px]">
+            <div className="flex items-center gap-2 text-white/95">
+              <Phone className="w-3.5 h-3.5 text-[#00D2FF]" />
+              <span className="font-mono-spec font-medium hidden sm:inline">Vendas:</span>
+              <a
+                href={`tel:${OFFICIAL_PHONES[0].clean}`}
+                className="font-mono-spec font-bold hover:text-[#00D2FF] transition-colors"
+              >
+                {OFFICIAL_PHONES[0].display}
+              </a>
+            </div>
 
-            {/* Currency Quick Switcher */}
-            <div className="flex items-center gap-0.5 bg-white/[0.06] rounded-sm p-0.5 font-mono-spec text-[10px]">
-              {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => (
+            <div className="h-3 w-px bg-white/25 hidden sm:block" />
+
+            <div className="flex items-center gap-1 bg-black/25 px-2 py-0.5 rounded-md border border-white/15">
+              {(['AOA', 'EUR', 'BRL'] as CurrencyCode[]).map((c) => (
                 <button
-                  key={code}
+                  key={c}
                   type="button"
-                  onClick={() => {
-                    setCurrency(code);
-                    setCustomCity(CURRENCIES[code].cityDefault);
-                  }}
-                  className={`px-2 py-0.5 rounded-sm transition-all cursor-pointer ${
-                    currency === code
-                      ? 'bg-[#B86B43] text-white'
-                      : 'text-white/50 hover:text-white/80'
+                  onClick={() => setCurrency(c)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] font-mono-spec transition-colors cursor-pointer ${
+                    currency === c ? 'bg-white text-[#0052CC] font-bold' : 'text-white/70 hover:text-white'
                   }`}
-                  title={`Mudar moeda para ${CURRENCIES[code].label}`}
                 >
-                  {code}
+                  {c}
                 </button>
               ))}
             </div>
-
-            {/* Discreet Strategy Access for Promoters */}
-            <button
-              type="button"
-              onClick={() => setIsStrategyOpen(true)}
-              className="inline-flex items-center gap-1.5 text-[#C9956C]/70 hover:text-[#D9A86C] font-mono-spec text-[10.5px] tracking-wide transition-colors cursor-pointer"
-              title="Abrir Guia Estratégico do Empreendimento"
-            >
-              <Lightbulb className="w-2.5 h-2.5" />
-              <span className="hidden xl:inline">Guia Estratégico</span>
-            </button>
           </div>
         </div>
       </div>
 
+      {/* =====================================================================
+          MAIN HEADER & NAVIGATION (Dual Brand Identity & Clean Montserrat Font)
+      ===================================================================== */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-20 sm:h-24 flex items-center justify-between">
+          {/* Dual Brand: Inara Residencial Talatona + Finest Investment Partners */}
+          <div className="flex items-center gap-4 sm:gap-6">
+            {/* Inara Brand Logo with Globe Icon */}
+            <button
+              type="button"
+              onClick={() => scrollToSection('hero')}
+              className="flex items-center gap-3 group text-left cursor-pointer"
+            >
+              {/* Official Inara Globe Emblem (Africa Illuminated) */}
+              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#0052CC] p-2 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:bg-[#004085] transition-all">
+                <svg viewBox="0 0 40 40" className="w-full h-full" fill="none">
+                  {/* Globe outline circle */}
+                  <circle cx="20" cy="20" r="17" stroke="white" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" />
+                  <circle cx="20" cy="20" r="14" fill="#003E99" />
+                  {/* Stylized African continent silhouette */}
+                  <path
+                    d="M17 11C19 11 22 12 23 14C24 16 25 18 24 20C23 21 21 22 21 24C20.5 25.5 19 28 17.5 29C16.5 28.5 16 26.5 16.5 25C15 24 14.5 22 15 20C14 18 15 15 17 11Z"
+                    fill="white"
+                  />
+                  {/* Angola highlight point */}
+                  <circle cx="18" cy="23" r="2" fill="#00D2FF" />
+                  <circle cx="18" cy="23" r="3.5" stroke="#00D2FF" strokeWidth="1" opacity="0.8" />
+                </svg>
+              </div>
 
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#F7F4EF]/97 border-b border-[#E2DBD0] transition-all">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-[88px] sm:h-[100px] flex items-center justify-between">
-          {/* Brand Wordmark with Official Logo */}
-          <button
-            type="button"
-            onClick={() => scrollToSection('hero')}
-            className="flex items-center gap-3.5 group cursor-pointer text-left"
-          >
-            <div className="relative w-14 h-14 sm:w-[62px] sm:h-[62px] rounded-xl overflow-hidden border border-[#E2DBD0] group-hover:border-[#B86B43]/50 transition-all bg-[#4B5260] shadow-sm flex items-center justify-center shrink-0">
-              <img
-                src="/media/logo/inara-emblem.jpg"
-                alt="Logomarca Oficial INARA RESIDÊNCIAL TALATONA"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+              <div>
+                <span className="block text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-none">
+                  INARA
+                </span>
+                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#0052CC] mt-1">
+                  RESIDÊNCIAL · TALATONA
+                </span>
+              </div>
+            </button>
+
+            <div className="hidden lg:block h-10 w-px bg-slate-200" />
+
+            {/* Finest Investment Partners Official Sub-Brand */}
+            <div className="hidden lg:flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#581C87] via-[#0052CC] to-[#00D2FF] p-0.5 flex items-center justify-center shadow-xs">
+                <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+                  <span className="text-[#0052CC] font-black text-xs leading-none">F</span>
+                </div>
+              </div>
+              <div>
+                <span className="block text-[11px] font-extrabold text-slate-900 tracking-wider uppercase leading-tight">
+                  FINEST
+                </span>
+                <span className="block text-[8px] font-semibold text-slate-500 uppercase tracking-widest leading-none">
+                  INVESTMENT PARTNERS
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="block font-serif-editorial text-[27px] sm:text-[30px] font-semibold text-[#1C1B18] leading-none tracking-[-0.02em]">
-                Inara
-              </span>
-              <span className="block font-mono-spec text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#B86B43] mt-1.5">
-                Residêncial · Talatona
-              </span>
-            </div>
-          </button>
+          </div>
 
-
-
-          {/* Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 xl:gap-8">
-            {([
-              { id: 'hero', label: 'Início' },
-              { id: 'conceito', label: 'Conceito' },
-              { id: 'implantacao', label: 'Implantação' },
-              { id: 'plantas', label: 'Plantas' },
-              { id: 'lazer', label: 'Clube & Lazer' },
-              { id: 'localizacao', label: 'Contacto' },
-            ] as { id: string; label: string }[]).map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => scrollToSection(item.id)}
-                className={`relative py-1 text-[13px] font-medium tracking-wide transition-all duration-200 cursor-pointer ${
-                  activeSection === item.id
-                    ? 'text-[#B86B43]'
-                    : 'text-[#1C1B18]/55 hover:text-[#1C1B18]'
-                }`}
-              >
-                {item.label}
-                {activeSection === item.id && (
-                  <span className="absolute -bottom-px left-0 right-0 h-px bg-[#B86B43] rounded-full" />
-                )}
-              </button>
-            ))}
+          {/* Desktop Nav Links (Clean Montserrat Typography) */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 font-bold text-xs uppercase tracking-wider text-slate-700">
+            <button
+              onClick={() => scrollToSection('hero')}
+              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+            >
+              Início
+            </button>
+            <button
+              onClick={() => scrollToSection('obra')}
+              className="hover:text-[#0052CC] transition-colors cursor-pointer flex items-center gap-1.5 py-1"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>A Obra Real</span>
+            </button>
+            <button
+              onClick={() => scrollToSection('plantas')}
+              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+            >
+              Moradias T4
+            </button>
+            <button
+              onClick={() => scrollToSection('financiamento')}
+              className="hover:text-[#0052CC] transition-colors cursor-pointer text-[#0052CC] py-1 font-extrabold flex items-center gap-1.5"
+            >
+              <Landmark className="w-3.5 h-3.5" />
+              <span>Standard Bank</span>
+            </button>
+            <button
+              onClick={() => scrollToSection('localizacao')}
+              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+            >
+              Localização
+            </button>
+            <button
+              onClick={() => scrollToSection('campanha')}
+              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+            >
+              A Campanha
+            </button>
           </nav>
 
-          {/* Primary CTA + Brochure Trigger */}
-          <div className="hidden sm:flex items-center gap-2.5">
+          {/* Header Action Button (Official Campaign Style) */}
+          <div className="hidden sm:flex items-center gap-3">
             <button
               type="button"
               onClick={() => setIsBrochureOpen(true)}
-              className="px-4 py-2 rounded-lg border border-[#E2DBD0] hover:border-[#B86B43]/40 text-[12px] font-medium text-[#6B6459] hover:text-[#1C1B18] tracking-wide transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-full border border-slate-300 hover:border-[#0052CC] text-slate-700 hover:text-[#0052CC] text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center gap-2"
             >
-              Brochura PDF
+              <Download className="w-3.5 h-3.5" />
+              <span>Brochura PDF</span>
             </button>
+
             <button
               type="button"
-              onClick={() => scrollToSection('localizacao')}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#B86B43] hover:bg-[#9E5B36] text-white text-[12px] font-semibold tracking-wide transition-all shadow-sm hover:shadow-md cursor-pointer"
+              onClick={() => scrollToSection('agendar')}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] hover:from-[#4C1D95] hover:to-[#004085] text-white text-xs font-bold tracking-wide transition-all shadow-md shadow-blue-500/20 hover:shadow-lg cursor-pointer flex items-center gap-2"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Agendar Visita</span>
             </button>
           </div>
 
-
-          {/* Mobile Menu Trigger */}
+          {/* Mobile Menu Toggle */}
           <button
-            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded border border-[#DFD8CC] text-[#1C1B18]"
+            className="lg:hidden p-2.5 rounded-xl border border-slate-200 text-slate-800"
             aria-label="Abrir menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#F7F4EF] border-b border-[#DFD8CC] px-6 py-5 space-y-4">
-            <div className="flex flex-col space-y-3 text-sm font-medium">
+          <div className="lg:hidden bg-white border-b border-slate-200 px-6 py-6 space-y-4">
+            <div className="flex flex-col gap-3 font-bold text-sm uppercase tracking-wider text-slate-800">
               <button
-                type="button"
                 onClick={() => scrollToSection('hero')}
-                className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activeSection === 'hero' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
-                }`}
+                className="text-left py-2 hover:text-[#0052CC]"
               >
-                00. Início / Visão Geral
+                Início
               </button>
               <button
-                type="button"
-                onClick={() => scrollToSection('conceito')}
-                className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activeSection === 'conceito' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
-                }`}
+                onClick={() => scrollToSection('obra')}
+                className="text-left py-2 hover:text-[#0052CC] flex items-center gap-2"
               >
-                01. O Conceito & Arquitetura
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>A Obra Real</span>
               </button>
               <button
-                type="button"
-                onClick={() => scrollToSection('implantacao')}
-                className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activeSection === 'implantacao' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
-                }`}
-              >
-                02. Implantação & Masterplan
-              </button>
-              <button
-                type="button"
                 onClick={() => scrollToSection('plantas')}
-                className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activeSection === 'plantas' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
-                }`}
+                className="text-left py-2 hover:text-[#0052CC]"
               >
-                03. Plantas & Tipologias T4 Duplex
+                Moradias T4 Duplex
               </button>
               <button
-                type="button"
-                onClick={() => scrollToSection('lazer')}
-                className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activeSection === 'lazer' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
-                }`}
+                onClick={() => scrollToSection('financiamento')}
+                className="text-left py-2 text-[#0052CC]"
               >
-                04. Galeria & Clube de Lazer (Lote 31)
+                Financiamento Standard Bank
               </button>
               <button
-                type="button"
                 onClick={() => scrollToSection('localizacao')}
-                className={`py-1.5 text-left font-mono-spec uppercase text-xs tracking-wider ${
-                  activeSection === 'localizacao' ? 'text-[#B86B43] font-bold' : 'text-[#1C1B18]'
-                }`}
+                className="text-left py-2 hover:text-[#0052CC]"
               >
-                05. Localização & Obra (Via A4A)
+                Localização em Talatona
+              </button>
+              <button
+                onClick={() => scrollToSection('campanha')}
+                className="text-left py-2 hover:text-[#0052CC]"
+              >
+                A Campanha Oficial
               </button>
             </div>
-            <div className="pt-3 border-t border-[#DFD8CC] flex flex-col gap-2">
+
+            <div className="pt-4 border-t border-slate-200 flex flex-col gap-2.5">
               <button
-                type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setIsBrochureOpen(true);
                 }}
-                className="w-full py-2.5 rounded border border-[#1C1B18] text-xs font-mono-spec uppercase tracking-wider"
+                className="w-full py-3 rounded-xl border border-slate-300 text-slate-800 text-xs font-bold uppercase tracking-wider text-center"
               >
                 Descarregar Dossier PDF
               </button>
               <button
-                type="button"
-                onClick={() => scrollToSection('localizacao')}
-                className="w-full py-2.5 rounded bg-[#B86B43] text-white text-center text-xs font-mono-spec uppercase tracking-wider font-semibold"
+                onClick={() => scrollToSection('agendar')}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#581C87] to-[#0052CC] text-white text-xs font-bold uppercase tracking-wider text-center shadow"
               >
-                Agendar Atendimento Privado
+                Agende a Sua Visita ao Stand
               </button>
             </div>
           </div>
@@ -463,2023 +494,1140 @@ export function App() {
       </header>
 
       {/* =====================================================================
-          1. FULL-VIEWPORT ARCHITECTURAL HERO PRESENTATION (#hero)
+          1. HERO COVER (Clean Architectural & Lifestyle Showcase - 100% Free of Embedded Text)
       ===================================================================== */}
-      <section id="hero" className="relative min-h-[82vh] lg:min-h-[88vh] flex flex-col justify-end overflow-hidden bg-[#151814]">
-            {/* Background Architectural Render with Smooth Crossfade */}
-            <div className="absolute inset-0 z-0">
-              {HERO_SCENES.map((scene, idx) => (
-                <img
-                  key={scene.id}
-                  src={scene.src}
-                  alt={scene.title}
-                  className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-1000 ease-in-out ${
-                    idx === activeHeroIndex
-                      ? 'opacity-100 scale-100'
-                      : 'opacity-0 scale-105 pointer-events-none'
-                  }`}
-                />
-              ))}
-
-              {/* Soft, bottom-only transparent gradient: 0% overlay on top 50%, leaving the sky, palm trees, and architecture crystal clear */}
-              <div
-                className="absolute inset-0 z-[1] pointer-events-none"
-                style={{
-                  background:
-                    'linear-gradient(to top, rgba(15, 18, 14, 0.92) 0%, rgba(15, 18, 14, 0.55) 24%, rgba(15, 18, 14, 0.15) 38%, transparent 52%)',
-                }}
-              />
-            </div>
-
-            {/* Main Hero Content */}
-            <div className="relative z-10 max-w-[1380px] w-full mx-auto px-4 sm:px-8 pb-12 sm:pb-16">
-              <div className="max-w-3xl lg:max-w-4xl space-y-5">
-                {/* Location Pill */}
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/30 backdrop-blur-sm border border-white/15 text-[#C9A87C] font-mono-spec text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.25em]">
-                  <span>Talatona · Luanda</span>
-                  <span className="w-1 h-1 rounded-full bg-[#C9A87C]/60" />
-                  <span>30 Moradias T4 Duplex</span>
-                </div>
-
-                {/* Editorial Headline */}
-                <h1 className="font-serif-editorial text-[32px] sm:text-[46px] lg:text-[58px] xl:text-[66px] text-white font-semibold leading-[1.06] tracking-[-0.02em] drop-shadow-xl">
-                  Inara Residêncial{' '}
-                  <br />
-                  <span className="italic font-normal text-[#E8D5B5]">
-                    Talatona
-                  </span>
-                </h1>
-
-                {/* Concise, Factual Subtitle */}
-                <p className="text-[13.5px] sm:text-[15px] lg:text-[16px] text-white/70 font-light leading-[1.7] max-w-xl drop-shadow-md">
-                  Condomínio privado de alto padrão — 30 moradias T4 Duplex
-                  de 217 m² com 4 suítes, piscina privativa e clube exclusivo
-                  de lazer no Lote 31, Talatona.
-                </p>
-
-                {/* Action Buttons */}
-                <div className="pt-2 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection('localizacao')}
-                    className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-[#B86B43] hover:bg-[#9E5B36] text-white text-[12.5px] font-semibold tracking-wide transition-all shadow-2xl shadow-[#B86B43]/20 hover:shadow-[#B86B43]/35 cursor-pointer hover:scale-[1.01]"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    <span>Solicitar Proposta Privada</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection('lazer')}
-                    className="inline-flex items-center gap-2 px-5 py-3.5 rounded-lg text-white/70 hover:text-white text-[12.5px] font-medium hover:bg-white/10 border border-white/15 hover:border-white/25 transition-all cursor-pointer"
-                  >
-                    <span>Ver o Clube & Lazer</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-[#C9A87C]" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Metrics Ribbon */}
-          <div className="relative z-20 bg-[#0F1210] text-[#F7F4EF] border-b border-white/[0.06]">
-            <div className="max-w-[1380px] mx-auto px-4 sm:px-8 py-7 grid grid-cols-2 md:grid-cols-5 gap-x-5 gap-y-6">
-              <div className="border-r border-white/[0.08] pr-5">
-                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
-                  Exclusividade
-                </span>
-                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
-                  30
-                </strong>
-                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">moradias unifamiliares</span>
-              </div>
-
-              <div className="md:border-r border-white/[0.08] pr-5">
-                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
-                  Terreno
-                </span>
-                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
-                  10.000
-                </strong>
-                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">m² · 31 lotes</span>
-              </div>
-
-              <div className="border-r border-white/[0.08] pr-5">
-                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
-                  Tipologia
-                </span>
-                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
-                  217
-                </strong>
-                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">m² · T4 Duplex</span>
-              </div>
-
-              <div className="md:border-r border-white/[0.08] pr-5">
-                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#B8945A] mb-2">
-                  Clube & Lazer
-                </span>
-                <strong className="stat-number text-[28px] sm:text-[34px] font-semibold leading-none text-white">
-                  767
-                </strong>
-                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">m² · Lote 31 exclusivo</span>
-              </div>
-
-              <div className="col-span-2 md:col-span-1">
-                <span className="block font-mono-spec text-[9px] uppercase tracking-[0.22em] text-[#5BAD7A] mb-2">
-                  Desde
-                </span>
-                <strong className="stat-number text-[22px] sm:text-[28px] font-semibold leading-none text-white">
-                  {formatPrice(TYPOLOGIES[0].basePriceEUR, currency)}
-                </strong>
-                <span className="block font-mono-spec text-[10px] text-white/38 mt-2 tracking-wide">Pagamento faseado disponível</span>
-              </div>
-            </div>
-          </div>
-
-      {/* Executive Quick Chapter Navigation Portal */}
-      <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-[1380px] mx-auto border-b border-[#DFD8CC]">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-9">
-          <div>
-            <span className="font-mono-spec text-[9.5px] uppercase tracking-[0.25em] text-[#B86B43] block mb-2">
-              O condomínio em quatro capítulos
-            </span>
-            <h2 className="font-serif-editorial text-[26px] sm:text-[38px] text-[#1C1B18] font-semibold leading-tight tracking-[-0.01em]">
-              Explore o Residencial Inara
-            </h2>
-          </div>
-          <p className="text-[13px] text-[#6B6459] max-w-xs leading-relaxed font-light">
-            Selecione um capítulo para navegar diretamente para a secção pretendida.
-          </p>
-        </div>
-
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1: Conceito */}
-          <div
-            onClick={() => scrollToSection('conceito')}
-            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-          >
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-              <img
-                src="/media/concept/inara-insolacao-ventilacao.jpg"
-                alt="O Conceito Arquitetónico"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                01 • ARQUITETURA
-              </span>
-            </div>
-            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-              <div>
-                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                  O Conceito & Biofilia
-                </h3>
-                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
-                  Insolação natural calculada, ventilação cruzada permanente e brises em madeira Cumaru.
-                </p>
-              </div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                <span>Ver Conceito</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Implantação */}
-          <div
-            onClick={() => scrollToSection('implantacao')}
-            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-          >
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-              <img
-                src="/media/hero/inara-hero-perspective.jpg"
-                alt="Implantação & Masterplan"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                02 • MASTERPLAN
-              </span>
-            </div>
-            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-              <div>
-                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                  Implantação (10.000 m²)
-                </h3>
-                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
-                  31 lotes nobres com alamedas arborizadas, portaria blindada 24h e Clube no Lote 31.
-                </p>
-              </div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                <span>Ver Masterplan</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Plantas */}
-          <div
-            onClick={() => scrollToSection('plantas')}
-            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-          >
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-              <img
-                src="/media/hero/inara-hero-daylight.jpg"
-                alt="Plantas & Tipologias"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                03 • PLANTAS TÉCNICAS
-              </span>
-            </div>
-            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-              <div>
-                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                  Plantas & Tipologias T4
-                </h3>
-                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
-                  Planta Técnica 2D cotada, revelação 3D e personalização Tailor-Made de acabamentos.
-                </p>
-              </div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                <span>Inspecionar Plantas</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4: Localização */}
-          <div
-            onClick={() => scrollToSection('localizacao')}
-            className="group cursor-pointer rounded-2xl overflow-hidden border border-[#DFD8CC] hover:border-[#B86B43] bg-white transition-all duration-300 hover:shadow-xl flex flex-col"
-          >
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#151814]">
-              <img
-                src="/media/hero/inara-hero-twilight.jpg"
-                alt="Localização & Visita"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20">
-                04 • LOCALIZAÇÃO VIP
-              </span>
-            </div>
-            <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-              <div>
-                <h3 className="font-serif-editorial text-xl sm:text-2xl text-[#1C1B18] group-hover:text-[#B86B43] transition-colors">
-                  Via A4A & Agendamento
-                </h3>
-                <p className="text-xs text-[#666159] mt-1.5 leading-relaxed">
-                  Via A4A a 2 min do Talatona Plaza e Morabeza. Agendamento presencial no stand.
-                </p>
-              </div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43]">
-                <span>Ver Localização</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          2. O CONCEITO & FILOSOFIA ARQUITETÓNICA (ASYMMETRIC EDITORIAL)
-      ===================================================================== */}
-      <section id="conceito" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Asymmetric Architectural Visual + Day/Night Light Study */}
-          <div className="lg:col-span-6 space-y-4">
-            <div className="relative rounded-lg overflow-hidden border border-[#DFD8CC] shadow-xl group">
-              <img
-                src={
-                  conceptNightMode
-                    ? '/media/hero/inara-hero-twilight.jpg'
-                    : '/media/concept/inara-insolacao-ventilacao.jpg'
-                }
-                alt="Insolação Natural e Ventilação Cruzada — Residencial Inara"
-                className="w-full aspect-[4/3] object-cover transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/80 via-transparent to-transparent" />
-
-              {/* Day / Night Lighting Study Toggle */}
-              <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <span className="px-3 py-1 rounded bg-[#151814]/80 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[11px] uppercase tracking-wider">
-                  {conceptNightMode
-                    ? 'ESTUDO LUMINOTÉCNICO NOTURNO (HORA DOURADA)'
-                    : 'INSOLAÇÃO NATURAL & VENTILAÇÃO CRUZADA'}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setConceptNightMode(!conceptNightMode)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#F7F4EF] text-[#1C1B18] hover:bg-[#B86B43] hover:text-white text-xs font-mono-spec font-medium transition-colors shadow cursor-pointer"
-                >
-                  <Sun className="w-3.5 h-3.5" />
-                  <span>{conceptNightMode ? 'Ver Luz Diurna' : 'Simular Entardecer'}</span>
-                </button>
-              </div>
-
-              {/* Architectural Caption Overlay */}
-              <div className="absolute bottom-4 left-4 right-4 text-[#F7F4EF] flex items-end justify-between">
-                <div>
-                  <span className="text-[10px] font-mono-spec uppercase tracking-widest text-[#D9A86C] block">
-                    SIGNIFICADO DE INARA • &ldquo;A QUE ILUMINA&rdquo;
-                  </span>
-                  <p className="font-serif-editorial text-xl">
-                    Brises móveis em Cumaru filtram o sol tropical ao longo das estações.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Secondary Architectural Materiality Strip */}
-            <div className="grid grid-cols-3 gap-3 pt-1">
-              <div className="p-3.5 rounded bg-[#EFEAE1] border border-[#DFD8CC]">
-                <span className="font-mono-spec text-[10px] text-[#B86B43] uppercase block">
-                  MATÉRIA 01
-                </span>
-                <strong className="font-serif-editorial text-base text-[#1C1B18]">
-                  Travertino Bruto
-                </strong>
-                <p className="text-[11px] text-[#666159] mt-0.5">
-                  Inércia térmica e nobreza intemporal nas fachadas ventiladas.
-                </p>
-              </div>
-              <div className="p-3.5 rounded bg-[#EFEAE1] border border-[#DFD8CC]">
-                <span className="font-mono-spec text-[10px] text-[#B86B43] uppercase block">
-                  MATÉRIA 02
-                </span>
-                <strong className="font-serif-editorial text-base text-[#1C1B18]">
-                  Madeira Cumaru
-                </strong>
-                <p className="text-[11px] text-[#666159] mt-0.5">
-                  Certificação florestal sustentável e resistência natural ao tempo.
-                </p>
-              </div>
-              <div className="p-3.5 rounded bg-[#EFEAE1] border border-[#DFD8CC]">
-                <span className="font-mono-spec text-[10px] text-[#B86B43] uppercase block">
-                  MATÉRIA 03
-                </span>
-                <strong className="font-serif-editorial text-base text-[#1C1B18]">
-                  Vidro Extraclaro
-                </strong>
-                <p className="text-[11px] text-[#666159] mt-0.5">
-                  Transparência máxima com proteção acústica e UV de 98%.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Editorial Narrative + 3 Condominium Value Pillars */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 font-mono-spec text-[9.5px] uppercase tracking-[0.25em] text-[#B86B43]">
-              <span>01 · O Conceito · Residencial Inara</span>
-            </div>
-
-            <h2 className="font-serif-editorial text-[30px] sm:text-[42px] lg:text-[48px] text-[#1C1B18] font-semibold leading-[1.1] tracking-[-0.01em]">
-              Desenhado para a luz.{' '}
-              <span className="italic font-normal text-[#6B6459]">Construído com sofisticação.</span>
-            </h2>
-
-            <p className="text-[#6B6459] text-[15px] leading-[1.78] font-light">
-              <strong className="text-[#1C1B18] font-semibold">Inara</strong> significa{' '}
-              <em>"raio de luz"</em>. Um condomínio fechado de 30 moradias de alto padrão
-              com arquitetura moderna e harmoniosa na Via A4A, Talatona.
-              Desenvolvido pela <strong className="text-[#1C1B18] font-medium">F.I.P. – Finest Investment Partners</strong> para
-              proporcionar um ambiente familiar e tranquilo com máxima privacidade, conforto e infraestrutura completa.
-            </p>
-
-
-            {/* The 3 Essential Condominium Pillars */}
-            <div className="space-y-4 pt-2">
-              <div className="p-5 rounded-lg bg-[#EFEAE1] border border-[#DFD8CC] flex items-start gap-4">
-                <div className="w-10 h-10 rounded bg-[#1C1B18] text-[#D9A86C] flex items-center justify-center shrink-0 mt-0.5">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1B18]">
-                    1. Segurança 24h & Portaria com Acesso Controlado
-                  </h3>
-                  <p className="text-sm text-[#666159] mt-1 leading-relaxed">
-                    Portaria blindada de segurança com eclusa de controlo localizada diretamente na Via A4A
-                    (Estrada do Rio Cambambe), garantindo vigilância contínua 24h/7, muro perimetral iluminado,
-                    circuito fechado de televisão (CFTV) e total proteção familiar.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-5 rounded-lg bg-[#EFEAE1] border border-[#DFD8CC] flex items-start gap-4">
-                <div className="w-10 h-10 rounded bg-[#3A4D3E] text-[#F7F4EF] flex items-center justify-center shrink-0 mt-0.5">
-                  <Trees className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1B18]">
-                    2. Moradias T4 Duplex de 217 m² (100% Suítes com Varanda)
-                  </h3>
-                  <p className="text-sm text-[#666159] mt-1 leading-relaxed">
-                    R/C com sala ampla de estar e jantar, escritório de trabalho independente, cozinha com ilha,
-                    lavandaria, WC social, quintal com piscina privativa, churrasqueira e 2 vagas. 1º Piso com 4 quartos em
-                    suíte, todos com varanda privativa.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-5 rounded-lg bg-[#EFEAE1] border border-[#DFD8CC] flex items-start gap-4">
-                <div className="w-10 h-10 rounded bg-[#B86B43] text-white flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif-editorial text-xl font-semibold text-[#1C1B18]">
-                    3. Clube de Lazer & Desporto no Lote 31 (767 m²)
-                  </h3>
-                  <p className="text-sm text-[#666159] mt-1 leading-relaxed">
-                    Edifício de apoio e lazer com 383,5 m² de área construída + 383,5 m² de exterior: Salão de festas,
-                    ginásio equipado, sala de cinema privada com acústica, sala de jogos, churrasqueira comunitária e
-                    quadra multiuso desportiva com iluminação LED.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          3. INTERACTIVE MASTERPLAN & AMENITIES HOTSPOT VIEWER (#implantacao)
-      ===================================================================== */}
-      <section id="implantacao" className="py-20 sm:py-28 bg-[#EFEAE1] border-y border-[#DFD8CC]">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-10">
-          {/* Section Header + Category Filter Pills */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div>
-              <span className="font-mono-spec text-[9.5px] uppercase tracking-[0.25em] text-[#B86B43] block mb-2">
-                02 · Implantação · Masterplan Interativo
-              </span>
-              <h2 className="font-serif-editorial text-[28px] sm:text-[42px] text-[#1C1B18] font-semibold leading-tight tracking-[-0.01em]">
-                Explore cada recanto{' '}
-                <span className="italic font-normal text-[#6B6459]">do Inara</span>
-              </h2>
-              <p className="text-[13.5px] text-[#6B6459] mt-3 max-w-xl leading-relaxed font-light">
-                Clique nos pontos numerados sobre o masterplan para conhecer em detalhe
-                a segurança, os espaços de convívio e o parque botânico.
-              </p>
-
-            </div>
-
-            {/* Masterplan View Toggle + Category Filter Buttons */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              {/* View Switcher: Map vs 3D Video */}
-              <div className="flex items-center bg-[#DFD8CC]/70 p-1 rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setMasterplanMode('map')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-all cursor-pointer ${
-                    masterplanMode === 'map'
-                      ? 'bg-[#1C1B18] text-[#F7F4EF] shadow-sm font-medium'
-                      : 'text-[#666159] hover:text-[#1C1B18]'
-                  }`}
-                >
-                  <Compass className="w-3.5 h-3.5 text-[#D9A86C]" />
-                  <span>Mapa 2D & Hotspots</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMasterplanMode('video')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-all cursor-pointer ${
-                    masterplanMode === 'video'
-                      ? 'bg-[#B86B43] text-white shadow-sm font-medium'
-                      : 'text-[#666159] hover:text-[#1C1B18]'
-                  }`}
-                >
-                  <Film className="w-3.5 h-3.5" />
-                  <span>Vídeo 3D do Masterplan</span>
-                </button>
-              </div>
-
-              {/* Category Filter Pills (Active when in map mode) */}
-              {masterplanMode === 'map' && (
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {[
-                    { id: 'all', label: 'Todos (07)' },
-                    { id: 'lazer', label: 'Lazer' },
-                    { id: 'seguranca', label: 'Segurança' },
-                    { id: 'natureza', label: 'Natureza' },
-                  ].map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory(cat.id as typeof selectedCategory);
-                        const firstMatch =
-                          cat.id === 'all'
-                            ? MASTERPLAN_HOTSPOTS[0]
-                            : MASTERPLAN_HOTSPOTS.find((h) => h.category === cat.id);
-                        if (firstMatch) {
-                          setActiveHotspot(firstMatch);
-                          setHotspotVideoActive(false);
-                        }
-                      }}
-                      className={`px-3 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-all cursor-pointer ${
-                        selectedCategory === cat.id
-                          ? 'bg-[#1C1B18] text-[#F7F4EF]'
-                          : 'bg-[#F7F4EF] text-[#666159] border border-[#DFD8CC] hover:border-[#1C1B18]'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Interactive Masterplan Grid: 7 Cols Map + 5 Cols Synchronized Detail Card */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left: Interactive Aerial Masterplan Map with Clickable Pins OR 3D Video Player */}
-            <div className="lg:col-span-7 flex flex-col justify-between bg-[#F7F4EF] p-3 sm:p-4 rounded-lg border border-[#DFD8CC] shadow-md">
-              {masterplanMode === 'video' ? (
-                <div className="relative w-full aspect-[16/10] rounded overflow-hidden bg-[#151814]">
-                  <video
-                    src={MASTERPLAN_VIDEO}
-                    controls
-                    autoPlay
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-3 left-3 px-3 py-1.5 rounded bg-[#151814]/85 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[10px] tracking-wider flex items-center gap-2 border border-white/15">
-                    <Film className="w-3.5 h-3.5 text-[#D9A86C]" />
-                    <span>TERRENO 10.000 m² • REVEAL 3D VOLUMETRIA</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setMasterplanMode('map')}
-                    className="absolute top-3 right-3 px-3 py-1.5 rounded bg-[#1C1B18]/80 hover:bg-[#1C1B18] text-white text-[11px] font-mono-spec uppercase tracking-wider border border-white/20 transition-all cursor-pointer"
-                  >
-                    Voltar aos Pontos 2D
-                  </button>
-                </div>
-              ) : (
-                <div className="relative w-full aspect-[16/10] rounded overflow-hidden bg-[#151814]">
-                  <img
-                    src="/media/masterplan/masterplan-3d-perspective.jpg"
-                    alt="Implantação Aérea Residencial Inara"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[#151814]/20" />
-
-                  {/* Compass & Scale Stamp on Map */}
-                  <div className="absolute top-3 left-3 px-3 py-1.5 rounded bg-[#151814]/80 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[10px] tracking-wider flex items-center gap-2 border border-white/15">
-                    <Compass className="w-3.5 h-3.5 text-[#D9A86C]" />
-                    <span>TERRENO 10.000 m² • 31 LOTES • TALATONA</span>
-                  </div>
-
-                  {/* Button to quickly watch 3D video on top of the map */}
-                  <button
-                    type="button"
-                    onClick={() => setMasterplanMode('video')}
-                    className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#B86B43] hover:bg-[#96522F] text-white text-[10px] font-mono-spec uppercase tracking-wider shadow-lg transition-all cursor-pointer"
-                  >
-                    <Play className="w-3 h-3 fill-current" />
-                    <span>Ver Vídeo 3D</span>
-                  </button>
-
-                  {/* Clickable Numbered Hotspot Pins */}
-                  {filteredHotspots.map((spot) => {
-                    const isSelected = activeHotspot.id === spot.id;
-                    return (
-                      <button
-                        key={spot.id}
-                        type="button"
-                        onClick={() => {
-                          setActiveHotspot(spot);
-                          setHotspotVideoActive(false);
-                        }}
-                        style={{
-                          left: `${spot.coordinates.x}%`,
-                          top: `${spot.coordinates.y}%`,
-                        }}
-                        className={`-translate-x-1/2 -translate-y-1/2 absolute z-20 flex items-center gap-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                          isSelected
-                            ? 'bg-[#B86B43] text-white px-3 py-1.5 shadow-xl scale-110 ring-4 ring-white/80'
-                            : 'bg-[#151814]/90 text-[#F7F4EF] hover:bg-[#B86B43] w-9 h-9 justify-center border border-white/60 hotspot-pulse'
-                        }`}
-                        aria-label={`Selecionar ponto ${spot.number}: ${spot.title}`}
-                      >
-                        <span className="font-mono-spec text-xs font-bold">{spot.number}</span>
-                        {isSelected && (
-                          <span className="text-[11px] font-medium whitespace-nowrap pr-1 hidden sm:inline">
-                            {spot.title.split('&')[0]}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Bottom Quick-Select Strip for All 7 Pins */}
-              <div className="mt-3 pt-3 border-t border-[#DFD8CC] grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {MASTERPLAN_HOTSPOTS.map((spot) => {
-                  const isSelected = activeHotspot.id === spot.id && masterplanMode === 'map';
-                  return (
-                    <button
-                      key={spot.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveHotspot(spot);
-                        setMasterplanMode('map');
-                        setHotspotVideoActive(false);
-                      }}
-                      className={`px-2.5 py-2 rounded text-left transition-all cursor-pointer flex items-center gap-2 ${
-                        isSelected
-                          ? 'bg-[#1C1B18] text-[#F7F4EF]'
-                          : 'bg-[#EFEAE1]/70 hover:bg-[#EFEAE1] text-[#1C1B18]'
-                      }`}
-                    >
-                      <span
-                        className={`font-mono-spec text-[11px] px-1.5 py-0.5 rounded ${
-                          isSelected ? 'bg-[#B86B43] text-white' : 'bg-[#DFD8CC] text-[#1C1B18]'
-                        }`}
-                      >
-                        {spot.number}
-                      </span>
-                      <span className="text-xs font-medium truncate">{spot.title}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Right: Synchronized Hotspot Detail Card */}
-            <div className="lg:col-span-5 bg-[#F7F4EF] rounded-lg border border-[#DFD8CC] shadow-md overflow-hidden flex flex-col justify-between">
-              <div>
-                {/* Hotspot Photography or Video */}
-                <div className="relative h-60 sm:h-64 overflow-hidden bg-[#151814]">
-                  {activeHotspot.video && hotspotVideoActive ? (
-                    <video
-                      src={activeHotspot.video}
-                      controls
-                      autoPlay
-                      loop
-                      playsInline
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={activeHotspot.image}
-                      alt={activeHotspot.title}
-                      className="w-full h-full object-cover transition-all duration-500"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/80 via-transparent to-transparent pointer-events-none" />
-                  
-                  <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
-                    <span className="px-2.5 py-1 rounded bg-[#B86B43] text-white font-mono-spec text-xs font-bold">
-                      PONTO {activeHotspot.number}
-                    </span>
-                    <span className="px-2.5 py-1 rounded bg-[#151814]/80 backdrop-blur-sm text-white font-mono-spec text-[11px] uppercase">
-                      {activeHotspot.categoryLabel}
-                    </span>
-                  </div>
-
-                  {activeHotspot.video && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <button
-                        type="button"
-                        onClick={() => setHotspotVideoActive(!hotspotVideoActive)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#151814]/85 hover:bg-[#B86B43] text-white font-mono-spec text-[10px] uppercase tracking-wider border border-white/20 transition-all cursor-pointer shadow-md"
-                      >
-                        {hotspotVideoActive ? (
-                          <>
-                            <Eye className="w-3 h-3" />
-                            <span>Ver Foto</span>
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-3 h-3 fill-current text-[#D9A86C]" />
-                            <span>Ver Vídeo 4K</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="absolute bottom-4 left-4 right-4 text-white z-10">
-                    <h3 className="font-serif-editorial text-2xl sm:text-3xl font-normal">
-                      {activeHotspot.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Technical Specs Bar */}
-                <div className="grid grid-cols-3 divide-x divide-[#DFD8CC] border-b border-[#DFD8CC] bg-[#EFEAE1]/60 font-mono-spec text-xs">
-                  <div className="p-3">
-                    <span className="text-[10px] text-[#666159] block">ÁREA DEDICADA</span>
-                    <strong className="text-[#1C1B18]">{activeHotspot.area}</strong>
-                  </div>
-                  <div className="p-3">
-                    <span className="text-[10px] text-[#666159] block">CAPACIDADE</span>
-                    <strong className="text-[#1C1B18]">{activeHotspot.capacity}</strong>
-                  </div>
-                  <div className="p-3">
-                    <span className="text-[10px] text-[#666159] block">FUNCIONAMENTO</span>
-                    <strong className="text-[#2E5A3C]">{activeHotspot.schedule}</strong>
-                  </div>
-                </div>
-
-                {/* Description & Highlights */}
-                <div className="p-6 space-y-4">
-                  <p className="text-sm text-[#666159] leading-relaxed">{activeHotspot.summary}</p>
-
-                  <div className="space-y-2 pt-2">
-                    <span className="font-mono-spec text-[11px] uppercase tracking-wider text-[#1C1B18] font-semibold block">
-                      DIFERENCIAIS TÉCNICOS & EQUIPAMENTOS:
-                    </span>
-                    {activeHotspot.highlights.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2.5 text-xs text-[#1C1B18]">
-                        <CheckCircle2 className="w-4 h-4 text-[#3A4D3E] shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Card Footer Navigation */}
-              <div className="px-6 py-4 bg-[#EFEAE1] border-t border-[#DFD8CC] flex items-center justify-between">
-                <span className="font-mono-spec text-xs text-[#666159]">
-                  Espaço entregue 100% equipado e decorado
-                </span>
-                <a
-                  href="#agendar"
-                  className="inline-flex items-center gap-1.5 text-xs font-mono-spec uppercase tracking-wider font-semibold text-[#B86B43] hover:text-[#1C1B18] transition-colors"
-                >
-                  <span>Conhecer Pessoalmente</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          4. INTERACTIVE TYPOLOGY & FLOOR PLAN SELECTOR (#plantas)
-      ===================================================================== */}
-      <section id="plantas" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
-        {/* Header & Typology Selector Tabs */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-[#DFD8CC] pb-8">
-          <div>
-            <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#B86B43] block">
-              03 • PLANTAS TÉCNICAS & TIPOLOGIAS EXCLUSIVAS
-            </span>
-            <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#1C1B18] font-normal mt-2">
-              Quatro Formas de Habitar o Residencial Inara
-            </h2>
-            <p className="text-sm sm:text-base text-[#666159] mt-2 max-w-2xl">
-              Selecione a tipologia ideal para a sua família ou portfólio de investimento. Interaja
-              com a planta técnica cotada ou visualize os acabamentos interiores.
-            </p>
-          </div>
-
-          {/* Typology Tabs */}
-          <div className="grid grid-cols-2 sm:flex items-center gap-2 bg-[#EFEAE1] p-1.5 rounded-lg border border-[#DFD8CC]">
-            {TYPOLOGIES.map((t) => {
-              const active = activeTypology.id === t.id;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => handleSelectTypology(t)}
-                  className={`px-4 py-2.5 rounded-md text-xs font-mono-spec uppercase tracking-wider transition-all cursor-pointer ${
-                    active
-                      ? 'bg-[#1C1B18] text-[#F7F4EF] shadow font-semibold'
-                      : 'text-[#666159] hover:text-[#1C1B18]'
-                  }`}
-                >
-                  <span className="block">{t.code}</span>
-                  <span className="text-[10px] opacity-75">{t.totalArea} m²</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Typology Main Showcase Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Left 7 Columns: Interactive 2D Blueprint SVG OR Interior/Exterior Photography */}
-          <div className="lg:col-span-7 space-y-4">
-            {/* View Mode Switcher Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#EFEAE1] px-4 py-2.5 rounded-lg border border-[#DFD8CC]">
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setViewMode('blueprint')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-colors cursor-pointer ${
-                    viewMode === 'blueprint'
-                      ? 'bg-[#B86B43] text-white font-medium shadow-sm'
-                      : 'bg-white/80 text-[#1C1B18] hover:bg-white'
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Planta Técnica 2D</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('video')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-colors cursor-pointer ${
-                    viewMode === 'video'
-                      ? 'bg-[#B86B43] text-white font-medium shadow-sm'
-                      : 'bg-white/80 text-[#1C1B18] hover:bg-white'
-                  }`}
-                >
-                  <Play className="w-3.5 h-3.5" />
-                  <span>Vídeo 3D do Layout</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('insolacao')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-colors cursor-pointer ${
-                    viewMode === 'insolacao'
-                      ? 'bg-[#B86B43] text-white font-medium shadow-sm'
-                      : 'bg-white/80 text-[#1C1B18] hover:bg-white'
-                  }`}
-                >
-                  <Sun className="w-3.5 h-3.5" />
-                  <span>Insolação & Piscina Privativa</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('interior')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-colors cursor-pointer ${
-                    viewMode === 'interior'
-                      ? 'bg-[#B86B43] text-white font-medium shadow-sm'
-                      : 'bg-white/80 text-[#1C1B18] hover:bg-white'
-                  }`}
-                >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Interior Decorado</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('exterior')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-mono-spec uppercase tracking-wider transition-colors cursor-pointer ${
-                    viewMode === 'exterior'
-                      ? 'bg-[#B86B43] text-white font-medium shadow-sm'
-                      : 'bg-white/80 text-[#1C1B18] hover:bg-white'
-                  }`}
-                >
-                  <Building className="w-3.5 h-3.5" />
-                  <span>Fachada Frontal</span>
-                </button>
-              </div>
-
-              <span className="font-mono-spec text-xs text-[#2E5A3C] font-medium">
-                ● {activeTypology.availableUnits} de {activeTypology.totalUnits} unidades disponíveis
-              </span>
-            </div>
-
-            {/* Conditional Render: Interactive SVG Floorplan vs 3D Video Loop vs Insolacao vs Photo */}
-            {viewMode === 'blueprint' ? (
-              <div className="rounded-lg overflow-hidden border border-[#DFD8CC] shadow-md bg-[#F7F4EF]">
-                <ArchitecturalFloorplanSVG
-                  typology={activeTypology}
-                  activeRoom={activeRoom}
-                  onSelectRoom={setActiveRoom}
-                />
-              </div>
-            ) : viewMode === 'video' ? (
-              <div className="relative rounded-lg overflow-hidden border border-[#DFD8CC] bg-[#151814] aspect-[16/10] shadow-xl group">
+      <section id="hero" className="relative min-h-[88vh] lg:min-h-[94vh] flex items-center overflow-hidden bg-[#0A1A3A]">
+        {/* Background Clean Media Layer (100% Text-Free Architectural Visuals) */}
+        <div className="absolute inset-0 z-0">
+          {HERO_COVER_SCENES.map((scene, idx) => (
+            <div
+              key={scene.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                idx === activeCoverIdx ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              }`}
+            >
+              {scene.type === 'video' ? (
                 <video
-                  src="/media/videos/house-layout-reveal-loop.mp4"
                   autoPlay
                   loop
                   muted
                   playsInline
-                  controls
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/80 via-transparent to-transparent pointer-events-none" />
-
-                <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-auto">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#151814]/85 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[11px] uppercase tracking-wider border border-white/20">
-                    <span className="w-2 h-2 rounded-full bg-[#B86B43] animate-pulse" />
-                    <span>VÍDEO 3D DO LAYOUT A ROLAR CONTINUAMENTE</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('blueprint')}
-                    className="px-3 py-1.5 rounded bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-mono-spec uppercase tracking-wider cursor-pointer"
-                  >
-                    Ver Planta Técnica 2D
-                  </button>
-                </div>
-
-                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white pointer-events-none">
-                  <div>
-                    <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                      REVELAÇÃO VOLUMÉTRICA 3D • MORADIA T4 DUPLEX (217 m²)
-                    </span>
-                    <h4 className="font-serif-editorial text-2xl">{activeTypology.name}</h4>
-                    <p className="text-xs text-white/80 max-w-lg mt-1 font-light">
-                      Vídeo 3D oficial demonstrando a transição fluida entre R/C (sala, escritório, cozinha) e 1º Piso (4 suítes com varandas).
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : viewMode === 'insolacao' ? (
-              <div className="relative rounded-lg overflow-hidden border border-[#DFD8CC] bg-[#151814] aspect-[16/10] shadow-xl group">
-                <img
-                  src="/media/concept/inara-insolacao-ventilacao.jpg"
-                  alt="Insolação Natural e Ventilação Cruzada — Quintal Privativo com Piscina"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/85 via-transparent to-transparent" />
-                <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                  <span className="px-3 py-1.5 rounded-full bg-[#151814]/85 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[11px] uppercase tracking-wider border border-white/20">
-                    🌿 INSOLAÇÃO NATURAL & VENTILAÇÃO CRUZADA
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('blueprint')}
-                    className="px-3 py-1.5 rounded bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-mono-spec uppercase tracking-wider cursor-pointer"
-                  >
-                    Voltar à Planta 2D
-                  </button>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
-                  <div>
-                    <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                      ORIENTAÇÃO SOLAR NORTE-SUL • QUINTAL COM PISCINA PRIVATIVA
-                    </span>
-                    <h4 className="font-serif-editorial text-2xl">
-                      Fachada Traseira & Lazer Privativo das 30 Moradias
-                    </h4>
-                    <p className="text-xs text-white/80 max-w-lg mt-1 font-light">
-                      Cada moradia T4 possui quintal ajardinado, piscina privativa e brises em madeira Cumaru, maximizando a luz natural e a ventilação cruzada constante de Talatona.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="relative rounded-lg overflow-hidden border border-[#DFD8CC] bg-[#151814] aspect-[16/10]">
-                <img
-                  src={
-                    viewMode === 'interior'
-                      ? activeTypology.interiorImage
-                      : activeTypology.exteriorImage
-                  }
-                  alt={activeTypology.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/80 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
-                  <div>
-                    <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                      {viewMode === 'interior'
-                        ? 'ACABAMENTOS DE SÉRIE • DECORADO MODELO'
-                        : 'ARQUITETURA EXTERIOR & VOLUMETRIA'}
-                    </span>
-                    <h4 className="font-serif-editorial text-2xl">{activeTypology.name}</h4>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('blueprint')}
-                    className="px-3 py-1.5 rounded bg-white/20 hover:bg-white/30 backdrop-blur-md text-xs font-mono-spec uppercase tracking-wider cursor-pointer"
-                  >
-                    Voltar à Planta 2D
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Room Quick-Selector Pills */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-xs font-mono-spec text-[#666159] mr-1">DIVISÕES:</span>
-              {activeTypology.rooms.map((room, idx) => (
-                <button
-                  key={room.id}
-                  type="button"
-                  onClick={() => {
-                    setActiveRoom(room);
-                    setViewMode('blueprint');
-                  }}
-                  className={`px-3 py-1.5 rounded text-xs font-mono-spec transition-colors cursor-pointer ${
-                    activeRoom.id === room.id
-                      ? 'bg-[#B86B43] text-white font-medium'
-                      : 'bg-[#EFEAE1] text-[#1C1B18] hover:border-[#B86B43] border border-[#DFD8CC]'
-                  }`}
+                  className="w-full h-full object-cover object-center"
                 >
-                  0{idx + 1}. {room.name} ({room.area})
+                  <source src={scene.src} type="video/mp4" />
+                </video>
+              ) : (
+                <img
+                  src={scene.src}
+                  alt={scene.title}
+                  className="w-full h-full object-cover object-center"
+                />
+              )}
+              {/* Luminous royal blue/slate gradient: clear text readability on left; architecture visible on right */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#07132C]/95 via-[#0A1A3A]/85 to-[#07132C]/40 lg:w-3/4" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07132C]/90 via-transparent to-transparent sm:hidden" />
+            </div>
+          ))}
+        </div>
+
+        {/* Hero Foreground Grid */}
+        <div className="relative z-10 max-w-[1380px] w-full mx-auto px-4 sm:px-8 py-16 sm:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left 7 Cols: Punchy Campaign Headlines in Montserrat */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Location Pill Banner */}
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#00D2FF] text-xs font-bold tracking-wider uppercase">
+                <MapPin className="w-3.5 h-3.5 text-[#00D2FF]" />
+                <span>Talatona • Via A4A (Estrada do Rio Cambambe)</span>
+              </div>
+
+              {/* Main Headline (Clean Montserrat Bold Typography matching the flyers) */}
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.08] tracking-tight">
+                Morar bem também é <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D2FF] via-[#38BDF8] to-[#93C5FD]">
+                  estar bem localizado
+                </span>
+              </h1>
+
+              {/* Official Slogan Pill from Flyer 2 & 4 */}
+              <div className="inline-flex flex-wrap items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-[#0052CC] to-[#00A3FF] text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20">
+                <span className="tracking-wide">→ INARA Residencial Talatona</span>
+                <span className="text-blue-100 font-normal">| Sua casa dos sonhos é agora uma realidade</span>
+              </div>
+
+              {/* Campaign Narrative */}
+              <p className="text-base sm:text-lg text-slate-200 font-normal leading-relaxed max-w-xl">
+                Mais do que uma moradia, um estilo de vida de excelência. Condomínio privado de <strong>30 moradias T4 Duplex unifamiliares de 217 m²</strong> com 4 suítes, piscina privativa individual e clube exclusivo no Lote 31.
+              </p>
+
+              {/* 3 Core Trust Pillars */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 text-white/95 text-xs sm:text-sm font-semibold">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00D2FF] shrink-0" />
+                  <span>30 Moradias T4 Duplex</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00D2FF] shrink-0" />
+                  <span>Terreno de 10.000 m²</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00D2FF] shrink-0" />
+                  <span>Standard Bank Angola</span>
+                </div>
+              </div>
+
+              {/* High-Impact Campaign Buttons */}
+              <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('agendar')}
+                  className="inline-flex items-center justify-center gap-3 px-7 py-4 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] hover:from-[#4C1D95] hover:to-[#004085] text-white text-sm font-bold tracking-wide transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02] cursor-pointer"
+                >
+                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <Calendar className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <span>Agende já a sua visita e descubra o seu futuro lar</span>
                 </button>
-              ))}
+
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('financiamento')}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white text-sm font-bold transition-all cursor-pointer"
+                >
+                  <Landmark className="w-4 h-4 text-[#00D2FF]" />
+                  <span>Financiamento Standard Bank</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Right 5 Cols: Interactive Floating Lifestyle Vignette Card (Flyer 2 Motif) */}
+            <div className="lg:col-span-5 hidden lg:block">
+              <div className="rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 shadow-2xl text-white space-y-6">
+                <div className="flex items-center justify-between border-b border-white/15 pb-4">
+                  <div>
+                    <span className="text-[11px] font-mono-spec uppercase tracking-wider text-[#00D2FF] block font-bold">
+                      INARA RESIDENCIAL TALATONA
+                    </span>
+                    <h3 className="text-xl font-bold text-white mt-0.5">
+                      Viver bem não é sorte, é uma escolha.
+                    </h3>
+                  </div>
+                  <div className="w-9 h-9 rounded-2xl bg-white/20 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-[#00D2FF]" />
+                  </div>
+                </div>
+
+                {/* The 3 Circular Preview Portals from Flyer 2 */}
+                <div className="space-y-3">
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+                    Espaços Exclusivos da Moradia T4:
+                  </span>
+
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    {/* Circle 1: Suíte Master */}
+                    <div
+                      onClick={() => setActiveCoverIdx(0)}
+                      className="group/item cursor-pointer flex flex-col items-center gap-2"
+                    >
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg group-hover/item:border-[#00D2FF] group-hover/item:scale-105 transition-all">
+                        <img
+                          src="/media/showcase/inara-suite-master.jpg"
+                          alt="Suíte Master com Varanda Privativa"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-200 group-hover/item:text-[#00D2FF] transition-colors leading-tight">
+                        Suíte Master
+                      </span>
+                    </div>
+
+                    {/* Circle 2: Living Integrado */}
+                    <div
+                      onClick={() => setActiveCoverIdx(2)}
+                      className="group/item cursor-pointer flex flex-col items-center gap-2"
+                    >
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg group-hover/item:border-[#00D2FF] group-hover/item:scale-105 transition-all">
+                        <img
+                          src="/media/showcase/inara-living-luz.jpg"
+                          alt="Sala com Luz Natural Difusa"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-200 group-hover/item:text-[#00D2FF] transition-colors leading-tight">
+                        Living com Luz
+                      </span>
+                    </div>
+
+                    {/* Circle 3: Piscina Privada */}
+                    <div
+                      onClick={() => setActiveCoverIdx(1)}
+                      className="group/item cursor-pointer flex flex-col items-center gap-2"
+                    >
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg group-hover/item:border-[#00D2FF] group-hover/item:scale-105 transition-all">
+                        <img
+                          src="/media/cover/inara-pools-twilight.jpg"
+                          alt="Piscina Privativa Individual"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-200 group-hover/item:text-[#00D2FF] transition-colors leading-tight">
+                        Piscina Privativa
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating Bottom Badge */}
+                <div className="p-3.5 rounded-2xl bg-black/30 border border-white/10 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <Landmark className="w-4 h-4 text-[#00D2FF]" />
+                    <span>Financiamento até 80%</span>
+                  </div>
+                  <strong className="text-[#00D2FF] font-bold">Standard Bank Angola</strong>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Right 5 Columns: Architectural Specification Sheet & Payment Simulator */}
-          <div className="lg:col-span-5 bg-[#EFEAE1] rounded-lg border border-[#DFD8CC] p-6 sm:p-8 space-y-6">
-            <div>
-              <span className="inline-block px-2.5 py-1 rounded bg-[#B86B43]/15 text-[#B86B43] font-mono-spec text-[11px] font-semibold uppercase tracking-wider">
-                {activeTypology.badge}
-              </span>
-              <h3 className="font-serif-editorial text-3xl sm:text-4xl text-[#1C1B18] mt-2">
-                {activeTypology.name}
-              </h3>
-              <p className="text-sm text-[#666159] mt-2 leading-relaxed">
-                {activeTypology.description}
+        {/* Clean Scene Selector (Fachada / Piscinas / Clube / Vídeo 3D) */}
+        <div className="absolute bottom-6 right-6 sm:right-12 z-20 flex flex-wrap items-center gap-2 bg-slate-950/80 backdrop-blur-md p-1.5 rounded-full border border-white/20 shadow-xl">
+          {HERO_COVER_SCENES.map((scene, idx) => (
+            <button
+              key={scene.id}
+              onClick={() => setActiveCoverIdx(idx)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                idx === activeCoverIdx
+                  ? 'bg-gradient-to-r from-[#00D2FF] to-[#0052CC] text-white shadow-md'
+                  : 'text-white/70 hover:text-white'
+              }`}
+            >
+              {scene.type === 'video' ? (
+                <Play className="w-3.5 h-3.5 text-cyan-300" />
+              ) : idx === 0 ? (
+                <Sun className="w-3.5 h-3.5 text-amber-300" />
+              ) : idx === 1 ? (
+                <Moon className="w-3.5 h-3.5 text-cyan-300" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+              )}
+              <span>{scene.period}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* =====================================================================
+          2. METRICS & HIGHLIGHTS RIBBON
+      ===================================================================== */}
+      <div className="bg-[#07132C] text-white border-b border-slate-800">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="space-y-1">
+            <span className="block text-3xl sm:text-4xl font-black text-[#00D2FF]">30</span>
+            <span className="block text-xs uppercase tracking-widest text-slate-300 font-bold">
+              Moradias Exclusivas T4
+            </span>
+            <span className="block text-[11px] text-slate-400">100% Suítes com Varandas</span>
+          </div>
+
+          <div className="space-y-1">
+            <span className="block text-3xl sm:text-4xl font-black text-[#00D2FF]">10.000 m²</span>
+            <span className="block text-xs uppercase tracking-widest text-slate-300 font-bold">
+              Terreno Nobre na Via A4A
+            </span>
+            <span className="block text-[11px] text-slate-400">31 Lotes Urbanizados em Talatona</span>
+          </div>
+
+          <div className="space-y-1">
+            <span className="block text-3xl sm:text-4xl font-black text-[#00D2FF]">Lote 31</span>
+            <span className="block text-xs uppercase tracking-widest text-slate-300 font-bold">
+              Clube Social & Lazer
+            </span>
+            <span className="block text-[11px] text-slate-400">767 m² de Equipamentos Privativos</span>
+          </div>
+
+          <div className="space-y-1">
+            <span className="block text-3xl sm:text-4xl font-black text-[#00D2FF]">Standard Bank</span>
+            <span className="block text-xs uppercase tracking-widest text-slate-300 font-bold">
+              Parceiro Oficial
+            </span>
+            <span className="block text-[11px] text-slate-400">Crédito à Habitação Facilitado</span>
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================================
+          3. PILAR 04 & OBRA REAL ("O QUE ESTÁ A NASCER AQUI VAI SURPREENDER-TE")
+      ===================================================================== */}
+      <section id="obra" className="py-20 sm:py-28 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left 6 Cols: Real Construction Multi-Stage Panel */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="relative rounded-3xl overflow-hidden border border-slate-200 shadow-2xl bg-slate-900 group">
+                <img
+                  src="/media/campaign/Inara Residencial 01.png"
+                  alt="Status da Construção das 30 Moradias Inara Talatona"
+                  className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-500"
+                />
+                <div className="absolute top-4 left-4 px-4 py-1.5 rounded-full bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow">
+                  ● OBRAS EM RITMO ACELERADO
+                </div>
+              </div>
+            </div>
+
+            {/* Right 6 Cols: Engineering Transparency & Construction Stages */}
+            <div className="lg:col-span-6 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-100 text-[#0052CC] text-xs font-bold uppercase tracking-widest">
+                <Building className="w-3.5 h-3.5" />
+                <span>PILAR 04 • ENGENHARIA & TRANSPARÊNCIA</span>
+              </div>
+
+              <h2 className="text-3xl sm:text-5xl font-black text-[#0F172A] tracking-tight leading-tight">
+                O Que Está a Nascer Aqui <br />
+                <span className="text-[#0052CC]">Vai Surpreender-te</span>
+              </h2>
+
+              <p className="text-slate-600 text-base leading-relaxed">
+                No <strong>Residencial Inara</strong>, cada cliente acompanha a evolução real da sua futura moradia. As obras estão em pleno andamento na Via A4A em Talatona, com alvenarias estruturais e fundações rigorosamente executadas pela equipa da <strong>Finest Investment Partners</strong>.
               </p>
-            </div>
 
-            {/* Key Architectural Metrics Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="bg-[#F7F4EF] p-3 rounded border border-[#DFD8CC]">
-                <Maximize2 className="w-4 h-4 text-[#B86B43] mb-1" />
-                <span className="font-mono-spec text-[10px] text-[#666159] block">ÁREA TOTAL</span>
-                <strong className="font-mono-spec text-sm text-[#1C1B18]">
-                  {activeTypology.totalArea} m²
-                </strong>
-              </div>
-              <div className="bg-[#F7F4EF] p-3 rounded border border-[#DFD8CC]">
-                <BedDouble className="w-4 h-4 text-[#B86B43] mb-1" />
-                <span className="font-mono-spec text-[10px] text-[#666159] block">SUÍTES</span>
-                <strong className="font-mono-spec text-sm text-[#1C1B18]">
-                  {activeTypology.suites} Suítes
-                </strong>
-              </div>
-              <div className="bg-[#F7F4EF] p-3 rounded border border-[#DFD8CC]">
-                <Bath className="w-4 h-4 text-[#B86B43] mb-1" />
-                <span className="font-mono-spec text-[10px] text-[#666159] block">BANHOS</span>
-                <strong className="font-mono-spec text-sm text-[#1C1B18]">
-                  {activeTypology.bathrooms} WCs
-                </strong>
-              </div>
-              <div className="bg-[#F7F4EF] p-3 rounded border border-[#DFD8CC]">
-                <Car className="w-4 h-4 text-[#B86B43] mb-1" />
-                <span className="font-mono-spec text-[10px] text-[#666159] block">GARAGEM</span>
-                <strong className="font-mono-spec text-sm text-[#1C1B18]">
-                  {activeTypology.parking} Vagas EV
-                </strong>
-              </div>
-            </div>
-
-            {/* Included Highlights */}
-            <div className="space-y-2 border-t border-[#DFD8CC] pt-4">
-              <span className="font-mono-spec text-[11px] uppercase tracking-wider text-[#1C1B18] font-semibold block">
-                ESPECIFICAÇÕES DESTA UNIDADE:
-              </span>
-              {activeTypology.features.map((feat, idx) => (
-                <div key={idx} className="flex items-start gap-2 text-xs text-[#666159]">
-                  <CheckCircle2 className="w-4 h-4 text-[#3A4D3E] shrink-0 mt-0.5" />
-                  <span className="text-[#1C1B18]/90">{feat}</span>
+              {/* Construction Stages Checklist */}
+              <div className="space-y-3.5 pt-2">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3.5 shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-3.5 h-3.5 font-bold" />
+                  </div>
+                  <div>
+                    <strong className="text-sm text-slate-900 block font-bold">Etapa 01: Terraplanagem & Infraestruturas Viárias</strong>
+                    <p className="text-xs text-slate-500 mt-0.5">Ruas internas, rede de água, saneamento e valas técnicas de eletricidade e fibra ótica.</p>
+                  </div>
                 </div>
-              ))}
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3.5 shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-3.5 h-3.5 font-bold" />
+                  </div>
+                  <div>
+                    <strong className="text-sm text-slate-900 block font-bold">Etapa 02: Fundações & Lajes de Betão Armado</strong>
+                    <p className="text-xs text-slate-500 mt-0.5">Estrutura antissísmica, vigas de reforço e contenções de alto padrão de engenharia.</p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-blue-200 bg-blue-50/50 flex items-start gap-3.5 shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <Clock className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <strong className="text-sm text-[#0052CC] block font-bold">Etapa 03: Alvenarias dos 2 Pisos & Coberturas (Em Curso)</strong>
+                    <p className="text-xs text-slate-600 mt-0.5">Paredes duplas com isolamento termoacústico e divisão interna dos 4 quartos em suíte.</p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3.5 shadow-sm opacity-80">
+                  <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Key className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <strong className="text-sm text-slate-900 block font-bold">Etapa 04: Acabamentos Nobres & Entrega das Chaves</strong>
+                    <p className="text-xs text-slate-500 mt-0.5">Revestimentos, caixilharia, louças sanitárias, pintura e ligação ao clube privativo.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA to Visit Construction Site */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('agendar')}
+                  className="px-6 py-3.5 rounded-full bg-[#0052CC] hover:bg-[#004085] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow cursor-pointer inline-flex items-center gap-2"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>Visitar o Canteiro de Obras em Talatona</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          4. PILAR 03 — PARCERIA STANDARD BANK ANGOLA ("SABIA QUE...?")
+      ===================================================================== */}
+      <section id="financiamento" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
+        <div className="rounded-3xl bg-gradient-to-br from-[#0052CC] via-[#0066FF] to-[#3B0764] text-white p-8 sm:p-14 lg:p-16 shadow-2xl overflow-hidden relative">
+          <div className="absolute inset-0 blueprint-grid-dark opacity-20 pointer-events-none" />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left 5 Cols: Campaign Artwork Card */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div
+                onClick={() =>
+                  setLightboxAsset(
+                    CAMPAIGN_ASSETS.find((a) => a.id === 'standard-bank') || null
+                  )
+                }
+                className="cursor-pointer group relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 max-w-sm"
+              >
+                <img
+                  src="/media/campaign/Post Inara 03.png"
+                  alt="Sabia que...? Financiamento Standard Bank Angola"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-center text-xs font-semibold text-white/90">
+                  Clique para ampliar o comunicado oficial
+                </div>
+              </div>
             </div>
 
-            {/* Interactive Launch Investment & Payment Plan Simulator */}
-            <div className="bg-[#F7F4EF] p-5 rounded-lg border border-[#DFD8CC] space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#666159] block">
-                    VALOR DE TABELA DE LANÇAMENTO
+            {/* Right 7 Cols: Financing Benefits & Calculator */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/20 backdrop-blur-md text-[#00D2FF] text-xs font-bold uppercase tracking-widest">
+                <Landmark className="w-4 h-4" />
+                <span>PILAR 03 • PARCERIA FINANCEIRA ESTRATÉGICA</span>
+              </div>
+
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                Sabia Que...? <br />
+                <span className="text-[#00D2FF]">Pode Financiar pelo Standard Bank Angola</span>
+              </h2>
+
+              <p className="text-slate-100 text-base sm:text-lg leading-relaxed">
+                O <strong>INARA Residencial Talatona</strong> oferece aos seus clientes a possibilidade de <strong>financiamento bancário através do Standard Bank Angola</strong>, facilitando o caminho para a realização do sonho da casa própria com suporte e agilidade.
+              </p>
+
+              {/* 3 Bank Highlights */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <span className="text-xs uppercase tracking-wider text-[#00D2FF] font-bold block mb-1">
+                    Até 80% Financiado
                   </span>
-                  <strong className="font-serif-editorial text-3xl text-[#1C1B18]">
-                    {formatPrice(activeTypology.basePriceEUR, currency)}
-                  </strong>
+                  <p className="text-xs text-slate-200">
+                    Pague apenas a entrada de 20% e parcele o restante pelo banco.
+                  </p>
                 </div>
-                <span className="px-2.5 py-1 rounded bg-[#2E5A3C]/15 text-[#2E5A3C] font-mono-spec text-[11px] font-medium">
-                  Tabela Fase I
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <span className="text-xs uppercase tracking-wider text-[#00D2FF] font-bold block mb-1">
+                    Até 25 Anos de Prazo
+                  </span>
+                  <p className="text-xs text-slate-200">
+                    Prestações calculadas de forma suave para planejar o futuro da família.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <span className="text-xs uppercase tracking-wider text-[#00D2FF] font-bold block mb-1">
+                    Apoio Documental
+                  </span>
+                  <p className="text-xs text-slate-200">
+                    A equipa da Finest Investment Partners apoia na instrução do dossiê.
+                  </p>
+                </div>
+              </div>
+
+              {/* Quick Interactive Mortgage Calculator */}
+              <div className="p-6 rounded-2xl bg-black/40 border border-white/20 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/15 pb-3">
+                  <span className="text-xs uppercase tracking-wider text-[#00D2FF] font-bold">
+                    Simulação Rápida • Moradia T4 Duplex ({formatPrice(basePriceEUR, currency)})
+                  </span>
+                  <span className="text-xs text-slate-300">
+                    Entrada: {downPaymentPct}% • {mortgageYears} Anos
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">
+                      Sinal de Entrada ({downPaymentPct}%):
+                    </label>
+                    <input
+                      type="range"
+                      min={15}
+                      max={50}
+                      step={5}
+                      value={downPaymentPct}
+                      onChange={(e) => setDownPaymentPct(Number(e.target.value))}
+                      className="w-full accent-[#00D2FF] cursor-pointer"
+                    />
+                    <strong className="text-sm font-mono-spec text-white block mt-1">
+                      {formatPrice(downPaymentAmountEUR, currency)}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-300 mb-1">
+                      Prazo do Crédito ({mortgageYears} Anos):
+                    </label>
+                    <input
+                      type="range"
+                      min={5}
+                      max={25}
+                      step={5}
+                      value={mortgageYears}
+                      onChange={(e) => setMortgageYears(Number(e.target.value))}
+                      className="w-full accent-[#00D2FF] cursor-pointer"
+                    />
+                    <strong className="text-sm font-mono-spec text-[#00D2FF] block mt-1">
+                      Estimativa: ~{formatPrice(monthlyPaymentEUR, currency)} / mês
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-[11px] text-slate-300 italic">
+                    * Simulação indicativa sujeita a aprovação pelo Standard Bank Angola.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('agendar')}
+                    className="px-5 py-2.5 rounded-full bg-white text-[#0052CC] hover:bg-slate-100 font-bold text-xs uppercase tracking-wider transition-colors shadow cursor-pointer"
+                  >
+                    Pedir Simulação Oficial ao Stand
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          5. PILAR 02 — MORADIAS T4 DUPLEX & PLANTA TÉCNICA INTERATIVA
+      ===================================================================== */}
+      <section id="plantas" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-[#0052CC] text-xs font-bold uppercase tracking-widest">
+              <Layers className="w-3.5 h-3.5" />
+              <span>PILAR 02 • ARQUITETURA & PLANTAS TÉCNICAS</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-[#0F172A] tracking-tight">
+              30 Moradias T4 Duplex de 217 m²
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed">
+              Explore a prancha técnica interativa de arquitetura. Clique em cada divisão da planta para inspecionar áreas úteis, dimensões e orientação solar.
+            </p>
+          </div>
+
+          {/* Typology Switcher */}
+          <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1.5 border border-slate-200">
+            {TYPOLOGIES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setActiveTypology(t);
+                  setActiveRoom(t.rooms[0]);
+                }}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                  activeTypology.id === t.id
+                    ? 'bg-[#0052CC] text-white shadow-md'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Technical Blueprint Floorplan Viewer */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-8">
+            <ArchitecturalFloorplanSVG
+              typology={activeTypology}
+              activeRoom={activeRoom}
+              onSelectRoom={setActiveRoom}
+            />
+          </div>
+
+          {/* Right 4 Cols: Typology Features & Official Specs */}
+          <div className="lg:col-span-4 space-y-6">
+            <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase font-bold tracking-widest text-[#0052CC]">
+                  ESPECIFICAÇÕES DA MORADIA
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+                  {activeTypology.availableUnits} Disponíveis
                 </span>
               </div>
 
-              {/* Downpayment Slider */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-mono-spec">
-                  <span className="text-[#666159]">Simular Sinal de Reserva ({downPaymentPercent}%):</span>
-                  <strong className="text-[#B86B43]">
-                    {formatPrice(downPaymentAmount, currency)}
-                  </strong>
+              <h3 className="text-2xl font-bold text-slate-900">
+                {activeTypology.name} ({activeTypology.totalArea} m²)
+              </h3>
+
+              <div className="divide-y divide-slate-200 text-xs sm:text-sm">
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Área Bruta de Construção:</span>
+                  <strong className="text-slate-900 font-mono-spec">217 m²</strong>
                 </div>
-                <input
-                  type="range"
-                  min={10}
-                  max={50}
-                  step={5}
-                  value={downPaymentPercent}
-                  onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
-                  className="w-full accent-[#B86B43] cursor-pointer"
-                />
-                <div className="grid grid-cols-2 gap-2 pt-2 text-[11px] font-mono-spec text-[#666159]">
-                  <div className="p-2 rounded bg-[#EFEAE1]">
-                    <span className="block text-[10px]">DURANTE OBRA (30%)</span>
-                    <strong className="text-[#1C1B18]">
-                      {formatPrice(constructionAmount, currency)}
-                    </strong>
-                  </div>
-                  <div className="p-2 rounded bg-[#EFEAE1]">
-                    <span className="block text-[10px]">CHAVE / FINANC. ({70 - downPaymentPercent}%)</span>
-                    <strong className="text-[#1C1B18]">
-                      {formatPrice(finalBalanceAmount, currency)}
-                    </strong>
-                  </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Quartos / Suítes:</span>
+                  <strong className="text-slate-900 font-bold">4 Quartos (100% Suítes)</strong>
+                </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Varandas Privativas:</span>
+                  <strong className="text-slate-900">Em todas as suítes</strong>
+                </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Piscina Privativa:</span>
+                  <strong className="text-slate-900 text-[#0052CC] font-bold">Incluída no Jardim</strong>
+                </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Churrasqueira & Lazer:</span>
+                  <strong className="text-slate-900">Espaço Gourmet Integrado</strong>
+                </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Vagas de Garagem:</span>
+                  <strong className="text-slate-900">2 Vagas Privativas</strong>
+                </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-slate-500">Valor de Tabela:</span>
+                  <strong className="text-base text-[#0052CC] font-black font-mono-spec">
+                    {formatPrice(activeTypology.basePriceEUR, currency)}
+                  </strong>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => handleRequestTypologyProposal(activeTypology)}
-                className="w-full py-3.5 px-5 rounded bg-[#1C1B18] hover:bg-[#B86B43] text-[#F7F4EF] text-xs font-mono-spec uppercase tracking-wider font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                onClick={() => scrollToSection('agendar')}
+                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] text-white font-bold text-xs uppercase tracking-wider transition-all shadow hover:shadow-lg cursor-pointer text-center block"
               >
-                <span>Solicitar Planta Cotada & Reserva ({activeTypology.code})</span>
-                <ArrowUpRight className="w-4 h-4" />
+                Bloquear Reserva desta Moradia
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Program Inara Tailor-Made Acabamentos Configurator */}
-      <HomeConfiguratorSection
-        currency={currency}
-        onSaveConfigurationToLead={handleSaveConfigurationToLead}
-      />
-
       {/* =====================================================================
-          5. CURATED BENTO VISUAL GALLERY & LIGHTBOX (#lazer)
+          6. PILAR 01 — LOCALIZAÇÃO PRIVILEGIADA EM TALATONA ("MORAR BEM TAMBÉM É ESTAR BEM LOCALIZADO")
       ===================================================================== */}
-      <section id="lazer" className="py-20 sm:py-28 bg-[#151814] text-[#F7F4EF]">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#D9A86C] block">
-                04 • GALERIA ARQUITETÓNICA & VIVER COMO NUM RESORT
-              </span>
-              <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#F7F4EF] font-normal mt-2">
-                A estética da tranquilidade em cada detalhe
-              </h2>
-            </div>
-            <p className="text-sm text-white/70 max-w-md">
-              Clique em qualquer fotografia para ampliar em ecrã inteiro e inspecionar a
-              materialidade das fachadas, piscinas e interiores do Residencial Inara.
-            </p>
-          </div>
+      <section id="localizacao" className="py-20 sm:py-28 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left 6 Cols: Narrative & Distances */}
+            <div className="lg:col-span-6 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-100 text-[#0052CC] text-xs font-bold uppercase tracking-widest">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>PILAR 01 • LOCALIZAÇÃO PRIVILEGIADA EM TALATONA</span>
+              </div>
 
-          {/* 5-Item Bento Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 auto-rows-[280px]">
-            {GALLERY_ITEMS.map((item) => (
+              <h2 className="text-3xl sm:text-5xl font-black text-[#0F172A] tracking-tight leading-tight">
+                Morar Bem Também É <br />
+                <span className="text-[#0052CC]">Estar Bem Localizado</span>
+              </h2>
+
+              <p className="text-slate-600 text-base leading-relaxed">
+                Implantado num terreno nobre de <strong>10.000 m²</strong> na <strong>Via A4A (Estrada do Rio Cambambe)</strong>, o Residencial Inara coloca a sua família no coração pulsante e valorizado de Talatona, com acesso fácil a tudo o que precisa.
+              </p>
+
+              {/* Distances Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                  <span className="text-xs font-bold text-[#0052CC] uppercase tracking-wider block">
+                    Escolas Internacionais
+                  </span>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Escola Portuguesa de Luanda e Colégio Internacional a poucos minutos.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                  <span className="text-xs font-bold text-[#0052CC] uppercase tracking-wider block">
+                    Shopping & Conveniência
+                  </span>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Belas Shopping, supermercados gourmet e restaurantes de referência.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                  <span className="text-xs font-bold text-[#0052CC] uppercase tracking-wider block">
+                    Centros Empresariais & Bancos
+                  </span>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Bancos, embaixadas, SIAC e edifícios corporativos de Talatona.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                  <span className="text-xs font-bold text-[#0052CC] uppercase tracking-wider block">
+                    Saúde & Clínicas
+                  </span>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Hospitais de referência, clínicas privadas e farmácias 24 horas.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right 6 Cols: Official Location Graphic Asset */}
+            <div className="lg:col-span-6 flex justify-center">
               <div
-                key={item.id}
-                onClick={() => setLightboxItem(item)}
-                className={`${item.spanClass} relative rounded-lg overflow-hidden border border-white/10 group cursor-pointer`}
+                onClick={() =>
+                  setLightboxAsset(
+                    CAMPAIGN_ASSETS.find((a) => a.id === 'localizacao-talatona') || null
+                  )
+                }
+                className="cursor-pointer group relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white max-w-md"
               >
                 <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  src="/media/campaign/Post Inara 01.png"
+                  alt="Morar bem também é estar bem localizado em Talatona"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/90 via-[#151814]/20 to-transparent" />
-                <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/20 flex items-center justify-center text-white opacity-80 group-hover:opacity-100 group-hover:bg-[#B86B43] transition-all">
-                  <Maximize2 className="w-4 h-4" />
+                <div className="absolute bottom-4 left-4 right-4 bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full text-center text-xs font-semibold text-white">
+                  Clique para ampliar o flyer oficial
                 </div>
-                <div className="absolute bottom-5 left-5 right-5">
-                  <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                    {item.category}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          7. A CAMPANHA OFICIAL — GALERIA DAS PEÇAS GRÁFICAS
+      ===================================================================== */}
+      <section id="campanha" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
+        <div className="space-y-12">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-[#0052CC] font-bold text-xs uppercase tracking-widest">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>IDENTIDADE & PEÇAS OFICIAIS</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-[#0F172A] tracking-tight">
+                Peças da Campanha Residencial Inara
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base max-w-2xl leading-relaxed">
+                Todas as peças oficiais criadas para a divulgação do empreendimento. Clique para ampliar em alta resolução com a arte completa.
+              </p>
+            </div>
+
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              8 Peças Oficiais Disponíveis
+            </span>
+          </div>
+
+          {/* Campaign Pieces Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CAMPAIGN_ASSETS.map((asset) => (
+              <div
+                key={asset.id}
+                onClick={() => setLightboxAsset(asset)}
+                className="group cursor-pointer rounded-3xl overflow-hidden border border-slate-200 bg-white hover:border-[#0052CC] transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 flex flex-col"
+              >
+                <div className={`relative ${asset.aspect} overflow-hidden bg-slate-900`}>
+                  <img
+                    src={asset.src}
+                    alt={asset.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  {/* Badge */}
+                  <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-[#0052CC] font-bold text-[10px] uppercase tracking-wider shadow">
+                    {asset.badge}
                   </span>
-                  <h3 className="font-serif-editorial text-2xl text-white mt-0.5">{item.title}</h3>
-                  <p className="text-xs text-white/75 mt-1 line-clamp-2">{item.caption}</p>
+
+                  {/* Zoom Icon */}
+                  <div className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-white/90 text-[#0052CC] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg">
+                    <Eye className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0052CC] block">
+                      {asset.categoryLabel}
+                    </span>
+                    <h3 className="font-bold text-base sm:text-lg text-slate-900 group-hover:text-[#0052CC] transition-colors mt-0.5 leading-snug">
+                      {asset.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
+                      {asset.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0052CC]">
+                    <span>Inspecionar Peça</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Two Official Project Videos Showcase */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-            {/* Masterplan Video Card */}
-            <div
-              onClick={() =>
-                setVideoModal({
-                  title: 'Vídeo 3D Oficial — Implantação e Volumetria',
-                  subtitle: 'TERRENO 10.000 m² • 31 LOTES • TALATONA',
-                  url: MASTERPLAN_VIDEO,
-                })
-              }
-              className="relative rounded-lg overflow-hidden border border-white/15 bg-white/5 p-4 sm:p-5 group cursor-pointer hover:border-[#D9A86C]/60 transition-all flex flex-col justify-between"
-            >
-              <div className="relative aspect-[16/9] rounded overflow-hidden bg-black/60 mb-4">
-                <img
-                  src="/media/facades/exterior-sunset-2.jpg"
-                  alt="Pré-visualização do Vídeo 3D do Masterplan"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-[#151814]/50 group-hover:bg-[#151814]/30 transition-colors flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full bg-[#B86B43] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                    <Play className="w-6 h-6 fill-current ml-0.5" />
-                  </div>
-                </div>
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-[#151814]/80 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[10px] uppercase tracking-wider flex items-center gap-1.5 border border-white/15">
-                  <Film className="w-3 h-3 text-[#D9A86C]" />
-                  <span>VÍDEO 3D EXCLUSIVO</span>
-                </div>
-              </div>
-              <div>
-                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                  TOPOGRAFIA & ARQUITETURA
-                </span>
-                <h4 className="font-serif-editorial text-2xl text-white mt-1">
-                  Implantação 10.000 m² • 30 Moradias & Clube Lote 31
-                </h4>
-                <p className="text-xs text-white/70 mt-2 leading-relaxed">
-                  Apresentação tridimensional completa mostrando a distribuição das 30 moradias T4 Duplex, os 2.391 m² de arruamentos internos pavimentados e o clube comunitário com piscina e lazer no Lote 31.
-                </p>
-              </div>
-            </div>
-
-            {/* Pool Deck Video Card */}
-            <div
-              onClick={() =>
-                setVideoModal({
-                  title: 'Vídeo da Piscina de Borda Infinita & Deck Solarium',
-                  subtitle: 'EXPERIÊNCIA SENSORIAL DE RESORT PRIVADO',
-                  url: POOL_VIDEO,
-                })
-              }
-              className="relative rounded-lg overflow-hidden border border-white/15 bg-white/5 p-4 sm:p-5 group cursor-pointer hover:border-[#D9A86C]/60 transition-all flex flex-col justify-between"
-            >
-              <div className="relative aspect-[16/9] rounded overflow-hidden bg-black/60 mb-4">
-                <img
-                  src="/media/pool/pool-club-private.jpg"
-                  alt="Pré-visualização do Vídeo da Piscina"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-[#151814]/50 group-hover:bg-[#151814]/30 transition-colors flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full bg-[#B86B43] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                    <Play className="w-6 h-6 fill-current ml-0.5" />
-                  </div>
-                </div>
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-[#151814]/80 backdrop-blur-md text-[#F7F4EF] font-mono-spec text-[10px] uppercase tracking-wider flex items-center gap-1.5 border border-white/15">
-                  <Film className="w-3 h-3 text-[#D9A86C]" />
-                  <span>VÍDEO 4K CINEMATOGRÁFICO</span>
-                </div>
-              </div>
-              <div>
-                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                  LAZER DE RESORT
-                </span>
-                <h4 className="font-serif-editorial text-2xl text-white mt-1">
-                  Piscina de Borda Infinita & Deck Solarium
-                </h4>
-                <p className="text-xs text-white/70 mt-2 leading-relaxed">
-                  Experiência imersiva junto à raia de 25m em pedra vulcânica natural, deck em madeira Cumaru e áreas de relaxamento rodeadas pelo verde nativo.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Full Interior Decorado 43-Photo Collection */}
-          <div className="pt-8 border-t border-white/15 space-y-6">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div>
-                <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#D9A86C] block">
-                  ACABAMENTOS & MOBILIÁRIO AUTORAL
-                </span>
-                <h3 className="font-serif-editorial text-2xl sm:text-4xl text-white mt-1">
-                  Interiores Decorados — Coleção de 43 Ambientes
-                </h3>
-                <p className="text-xs sm:text-sm text-white/70 mt-1 max-w-2xl">
-                  Cada detalhe reflete o design orgânico contemporâneo: pedra travertino levigada, carvalho natural, iluminação zenital difusa e integração total com as varandas.
-                </p>
-              </div>
-              <div className="font-mono-spec text-xs text-[#D9A86C] bg-white/5 border border-white/15 px-3 py-1.5 rounded self-start md:self-auto">
-                Exibindo {Math.min(decoradoVisibleCount, INTERIOR_DECORADO_IMAGES.length)} de 43 Fotografias
-              </div>
-            </div>
-
-            {/* Grid of Decorado Photos */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {INTERIOR_DECORADO_IMAGES.slice(0, decoradoVisibleCount).map((photo, idx) => (
-                <div
-                  key={photo.id}
-                  onClick={() => setSelectedDecoradoIndex(idx)}
-                  className="group relative aspect-[4/3] rounded-lg overflow-hidden border border-white/10 bg-white/5 cursor-pointer"
-                >
-                  <img
-                    src={photo.src}
-                    alt={photo.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#151814]/90 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-white">
-                    <span className="font-mono-spec text-[10px] text-white/90 truncate">
-                      Ambiente {String(idx + 1).padStart(2, '0')}
-                    </span>
-                    <Maximize2 className="w-3.5 h-3.5 text-[#D9A86C] opacity-75 group-hover:opacity-100 shrink-0" />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Load More Button */}
-            <div className="flex justify-center pt-2">
-              {decoradoVisibleCount < INTERIOR_DECORADO_IMAGES.length ? (
-                <button
-                  type="button"
-                  onClick={() => setDecoradoVisibleCount((prev) => Math.min(prev + 12, INTERIOR_DECORADO_IMAGES.length))}
-                  className="px-6 py-3 rounded bg-[#B86B43] hover:bg-[#96522F] text-white font-mono-spec text-xs uppercase tracking-wider font-medium transition-all shadow-md cursor-pointer"
-                >
-                  Carregar Mais Ambientes ({INTERIOR_DECORADO_IMAGES.length - decoradoVisibleCount} restantes)
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setDecoradoVisibleCount(12)}
-                  className="px-6 py-3 rounded bg-white/10 hover:bg-white/20 text-white font-mono-spec text-xs uppercase tracking-wider transition-all border border-white/20 cursor-pointer"
-                >
-                  Recolher para 12 Ambientes
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Smart Condominium Infrastructure Strip */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-white/15">
-            <div className="p-5 rounded-lg bg-white/5 border border-white/10 flex items-start gap-3.5">
-              <Lock className="w-5 h-5 text-[#D9A86C] shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-serif-editorial text-lg text-white">App Exclusiva Inara</h4>
-                <p className="text-xs text-white/65 mt-1">
-                  Convites QR Code para visitantes, reserva do Espaço Gourmet e quadra de Padel pelo
-                  telemóvel.
-                </p>
-              </div>
-            </div>
-            <div className="p-5 rounded-lg bg-white/5 border border-white/10 flex items-start gap-3.5">
-              <Zap className="w-5 h-5 text-[#D9A86C] shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-serif-editorial text-lg text-white">Autonomia Energética</h4>
-                <p className="text-xs text-white/65 mt-1">
-                  Gerador silencioso que alimenta 100% das áreas comuns e residências em caso de
-                  falha da rede.
-                </p>
-              </div>
-            </div>
-            <div className="p-5 rounded-lg bg-white/5 border border-white/10 flex items-start gap-3.5">
-              <Droplets className="w-5 h-5 text-[#D9A86C] shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-serif-editorial text-lg text-white">Reserva Hídrica & Furo</h4>
-                <p className="text-xs text-white/65 mt-1">
-                  Estação própria de tratamento e filtragem de água com autonomia superior a 72
-                  horas.
-                </p>
-              </div>
-            </div>
-            <div className="p-5 rounded-lg bg-white/5 border border-white/10 flex items-start gap-3.5">
-              <Wifi className="w-5 h-5 text-[#D9A86C] shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-serif-editorial text-lg text-white">Wi-Fi 6 no Parque</h4>
-                <p className="text-xs text-white/65 mt-1">
-                  Cobertura de fibra ótica empresarial em todo o clube, piscina, coworking e jardins.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* =====================================================================
-          6. LOCATION, PROXIMITY MATRIX & CONSTRUCTION STATUS (#localizacao)
+          8. PILAR 05 — AGENDAMENTO DE VISITA NO STAND ("SUA NOVA VIDA COMEÇA AQUI!")
       ===================================================================== */}
-      <section id="localizacao" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left 6 Cols: Neighborhood Proximity & Architectural Radar Map */}
-          <div className="lg:col-span-6 space-y-6">
-            <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#B86B43] block">
-              05 • LOCALIZAÇÃO PRIVILEGIADA & ENVOLVENTE NOBRE
-            </span>
-            <h2 className="font-serif-editorial text-3xl sm:text-5xl text-[#1C1B18] font-normal">
-              Localização privilegiada na Via A4A em Talatona.
+      <section id="agendar" className="py-20 sm:py-28 bg-gradient-to-br from-slate-950 via-[#0A192F] to-[#1E1B4B] text-white">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-12">
+          <div className="max-w-2xl mx-auto text-center space-y-3">
+            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/10 backdrop-blur-md text-[#00D2FF] text-xs font-bold uppercase tracking-widest">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>PILAR 05 • STAND DE VENDAS NO TERRENO</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+              Sua Nova Vida Começa Aqui!
             </h2>
-            <p className="text-sm sm:text-base text-[#666159] leading-relaxed">
-              Situado na <strong className="text-[#1C1B18]">Via A4A (Estrada do Rio Cambambe)</strong>, Talhão 205/09 (a Noroeste do Condomínio Morabeza), no Bairro de Talatona, Luanda. Acesso asfaltado direto ligando Talatona à Avenida Luanda Sul e à Rua do Kamorteiro, a poucos minutos dos principais centros empresariais, comerciais e de ensino.
+            <p className="text-slate-300 text-sm sm:text-base">
+              Venha conhecer a implantação, a maquete física e o ritmo de obras na Via A4A em Talatona. A nossa equipa de consultores está pronta para atendê-lo.
             </p>
-
-            {/* Proximity Time Matrix from Presentation PDF */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {[
-                {
-                  time: '02 MIN',
-                  place: 'Condomínio Morabeza & Talatona Plaza',
-                  desc: 'Vizinhança nobre de embaixadas e condomínios',
-                },
-                {
-                  time: '04 MIN',
-                  place: 'Belas Shopping & Supermercados',
-                  desc: 'Centros comerciais, farmácias e restauração',
-                },
-                {
-                  time: '05 MIN',
-                  place: 'CCT (Convenções) & Hotel HCTA',
-                  desc: 'Eventos corporativos e hotelaria de prestígio',
-                },
-                {
-                  time: '06 MIN',
-                  place: 'Escola Portuguesa & Colégios Internacionais',
-                  desc: 'Ensino internacional de excelência para a família',
-                },
-                {
-                  time: '08 MIN',
-                  place: 'SIAC Talatona & Inara Business Park',
-                  desc: 'Serviços administrativos e polos empresariais',
-                },
-                {
-                  time: '15 KM',
-                  place: 'Aeroporto Internacional 4 de Fevereiro',
-                  desc: 'Acesso rodoviário rápido pela Via Expressa',
-                },
-              ].map((loc, i) => (
-                <div
-                  key={i}
-                  className="p-4 rounded-lg bg-[#EFEAE1] border border-[#DFD8CC] flex items-start gap-3.5"
-                >
-                  <span className="px-2.5 py-1 rounded bg-[#1C1B18] text-[#D9A86C] font-mono-spec text-xs font-bold shrink-0">
-                    {loc.time}
-                  </span>
-                  <div>
-                    <strong className="text-sm text-[#1C1B18] block">{loc.place}</strong>
-                    <span className="text-xs text-[#666159]">{loc.desc}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Legal Coordinates Card */}
-            <div className="p-4 rounded-lg bg-[#EFEAE1]/70 border border-[#DFD8CC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-mono-spec">
-              <div>
-                <span className="text-[#666159] block text-[10px]">REGISTO PREDIAL OFICIAL:</span>
-                <strong className="text-[#1C1B18]">Prédio nº 1062-Talatona da 2ª Secção (Luanda)</strong>
-              </div>
-              <div className="sm:text-right">
-                <span className="text-[#666159] block text-[10px]">COORDENADAS GPS:</span>
-                <strong className="text-[#B86B43]">8º55&apos;33.33&quot;S; 13º11&apos;40.18&quot;E</strong>
-              </div>
-            </div>
           </div>
 
-          {/* Right 6 Cols: Transparent Construction Progress & Quality Assurance */}
-          <div className="lg:col-span-6 bg-[#EFEAE1] p-6 sm:p-8 rounded-lg border border-[#DFD8CC] space-y-6">
-            <div className="flex items-center justify-between border-b border-[#DFD8CC] pb-4">
-              <div>
-                <span className="font-mono-spec text-[11px] uppercase tracking-widest text-[#2E5A3C] font-semibold block">
-                  PROMOTOR & PROJETO LEGALIZADO
-                </span>
-                <h3 className="font-serif-editorial text-2xl sm:text-3xl text-[#1C1B18]">
-                  F.I.P. – Finest Investment Partners
-                </h3>
-              </div>
-              <div className="text-right font-mono-spec">
-                <span className="text-[10px] text-[#666159] block">VGV GLOBAL AVALIADO</span>
-                <strong className="text-sm text-[#B86B43]">20.583.500.000 AOA</strong>
-              </div>
-            </div>
-
-            {/* Progress Bars */}
-            <div className="space-y-4">
-              {[
-                { label: 'Direito de Superfície & Registo Predial (Prédio 1062)', pct: 100 },
-                { label: 'Projeto Urbanístico de Loteamento (31 Lotes)', pct: 100 },
-                { label: 'Peças Técnicas e Arquitetura Moradias T4 Duplex (217 m²)', pct: 100 },
-                { label: 'Delimitação Perimetral e Muro do Terreno (10.000 m²)', pct: 100 },
-                { label: 'Infraestruturas Urbanas (Água, Esgotos e Eletricidade)', pct: 85 },
-              ].map((step, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-mono-spec">
-                    <span className="text-[#1C1B18] font-medium">{step.label}</span>
-                    <span className="text-[#B86B43] font-bold">{step.pct}%</span>
-                  </div>
-                  <div className="w-full h-2 rounded-full bg-[#DFD8CC] overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-[#3A4D3E] transition-all duration-700"
-                      style={{ width: `${step.pct}%` }}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-4xl mx-auto">
+            {/* Left 7 Cols: Form */}
+            <div className="lg:col-span-7 bg-white/5 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/15 shadow-2xl">
+              {!formSubmitted ? (
+                <form onSubmit={handleFormSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      O Seu Nome Completo
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      placeholder="Ex: Dr. António Silva"
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#00D2FF]"
                     />
                   </div>
-                </div>
-              ))}
-            </div>
 
-            <div className="p-4 rounded bg-[#F7F4EF] border border-[#DFD8CC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <Building className="w-5 h-5 text-[#B86B43] shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-xs text-[#1C1B18] block">
-                    Visite o Terreno & Atendimento Comercial
-                  </strong>
-                  <span className="text-xs text-[#666159]">
-                    Via A4A (Estrada do Rio Cambambe), Talhão 205/09, Talatona.
-                  </span>
-                </div>
-              </div>
-              <a
-                href="#agendar"
-                className="px-4 py-2 rounded bg-[#1C1B18] hover:bg-[#B86B43] text-white font-mono-spec text-xs uppercase tracking-wider shrink-0 transition-colors"
-              >
-                Solicitar Contacto
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          7. PRIVATE VISIT & BROCHURE LEAD CAPTURE SECTION (#agendar)
-      ===================================================================== */}
-      <section id="agendar" className="py-20 sm:py-28 bg-[#151814] text-[#F7F4EF] blueprint-grid-dark">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left 5 Columns: Private Concierge Invitation */}
-            <div className="lg:col-span-5 space-y-6">
-              <span className="font-mono-spec text-xs uppercase tracking-[0.2em] text-[#D9A86C] block">
-                06 • ATENDIMENTO PRIVADO & RESERVAS
-              </span>
-              <h2 className="font-serif-editorial text-3xl sm:text-5xl text-white font-normal leading-tight">
-                Agende uma experiência privada no Residencial Inara.
-              </h2>
-              <p className="text-sm sm:text-base text-white/75 leading-relaxed">
-                O nosso diretor comercial e a equipa de arquitetura estão disponíveis para o receber
-                no Stand & Casa Modelo com total privacidade, ou para realizar uma apresentação
-                exclusiva por videochamada.
-              </p>
-
-              <div className="space-y-4 pt-2 border-t border-white/15">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#D9A86C]">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="font-mono-spec text-[10px] uppercase tracking-wider text-white/60 block">
-                      LOCALIZAÇÃO DO EMPREENDIMENTO
-                    </span>
-                    <strong className="text-sm text-white">
-                      Via A4A (Estrada do Rio Cambambe), Talhão 205/09 • Talatona, Luanda
-                    </strong>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#D9A86C]">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="font-mono-spec text-[10px] uppercase tracking-wider text-white/60 block">
-                      HORÁRIO DE ATENDIMENTO
-                    </span>
-                    <strong className="text-sm text-white">
-                      Segunda a Sábado • 08h30 às 18h30 (Com agendamento prévio)
-                    </strong>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#D9A86C]">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="font-mono-spec text-[10px] uppercase tracking-wider text-white/60 block">
-                      TELEFONES OFICIAIS & WHATSAPP
-                    </span>
-                    <strong className="text-sm text-white font-mono-spec">
-                      931 893 859 / 923 436 077 / 929 120 300
-                    </strong>
-                    <span className="block text-xs text-[#D9A86C] font-mono-spec mt-0.5">
-                      vendas@inara-africa.com
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right 7 Columns: Clean Architectural Conversion Form */}
-            <div className="lg:col-span-7 bg-[#F7F4EF] text-[#1C1B18] p-6 sm:p-10 rounded-lg border border-[#DFD8CC] shadow-2xl">
-              {!formSubmitted ? (
-                <form onSubmit={handleFormSubmit} className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-5 border-b border-[#E2DBD0]">
-                    <div>
-                      <h3 className="font-serif-editorial text-[22px] sm:text-[26px] font-semibold text-[#1C1B18] leading-tight tracking-[-0.01em]">
-                        Solicitar Proposta Personalizada
-                      </h3>
-                      <p className="text-[12.5px] text-[#6B6459] mt-1 font-light">
-                        Resposta do consultor em menos de 30 minutos úteis.
-                      </p>
-                    </div>
-                    <span className="inline-flex items-center gap-1.5 font-mono-spec text-[9.5px] px-2.5 py-1.5 rounded-md bg-[#2E5A3C]/10 text-[#2E5A3C] self-start whitespace-nowrap tracking-wide">
-                      <ShieldCheck className="w-3 h-3" />
-                      Confidencial
-                    </span>
-                  </div>
-
-                  {/* Modality Selector */}
-                  <div>
-                    <label className="block font-mono-spec text-[10px] uppercase tracking-[0.2em] text-[#6B6459] mb-2.5">
-                      Como prefere ser atendido?
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        { id: 'presencial', label: 'Visita Presencial' },
-                        { id: 'video', label: 'Reunião Online' },
-                        { id: 'tabela', label: 'Receber Tabela & Plantas' },
-                      ].map((mode) => (
-                        <button
-                          key={mode.id}
-                          type="button"
-                          onClick={() => setFormVisitType(mode.id as typeof formVisitType)}
-                          className={`py-2.5 px-3 rounded-lg text-[12px] font-medium border text-center transition-all cursor-pointer ${
-                            formVisitType === mode.id
-                              ? 'bg-[#1C1B18] text-white border-[#1C1B18]'
-                              : 'bg-white text-[#6B6459] border-[#E2DBD0] hover:border-[#B86B43]/50 hover:text-[#1C1B18]'
-                          }`}
-                        >
-                          {mode.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-
-                  {/* Name & Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
-                        Nome Completo <span className="text-[#B86B43]">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formName}
-                        onChange={(e) => setFormName(e.target.value)}
-                        placeholder="Dr. António Albuquerque"
-                        className="w-full px-4 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] placeholder:text-[#C4BDB3] focus:outline-none focus:border-[#B86B43] transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
-                        Telemóvel / WhatsApp <span className="text-[#B86B43]">*</span>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                        Telefone / WhatsApp
                       </label>
                       <input
                         type="tel"
                         required
                         value={formPhone}
                         onChange={(e) => setFormPhone(e.target.value)}
-                        placeholder={CURRENCIES[currency].phonePlaceholder}
-                        className="w-full px-4 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] placeholder:text-[#C4BDB3] focus:outline-none focus:border-[#B86B43] transition-all"
+                        placeholder="+244 9..."
+                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#00D2FF]"
                       />
                     </div>
-                  </div>
 
-                  {/* Email, Preferred Typology & Date */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
-                        E-mail <span className="text-[#B86B43]">*</span>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                        E-mail
                       </label>
                       <input
                         type="email"
                         required
                         value={formEmail}
                         onChange={(e) => setFormEmail(e.target.value)}
-                        placeholder="nome@dominio.com"
-                        className="w-full px-4 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] placeholder:text-[#C4BDB3] focus:outline-none focus:border-[#B86B43] transition-all"
+                        placeholder="seu@email.com"
+                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#00D2FF]"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
-                        Tipologia de Interesse
-                      </label>
-                      <select
-                        value={formTypology}
-                        onChange={(e) => setFormTypology(e.target.value)}
-                        className="w-full px-3.5 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] focus:outline-none focus:border-[#B86B43] transition-all"
-                      >
-                        {TYPOLOGIES.map((t) => (
-                          <option key={t.id} value={t.name}>
-                            {t.name} ({t.totalArea} m²)
-                          </option>
-                        ))}
-                        <option value="Investimento Múltiplas Unidades">
-                          Investimento (Múltiplas Unidades)
-                        </option>
-                      </select>
-                    </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      Data Preferida para Visita
+                    </label>
+                    <input
+                      type="date"
+                      value={formDate}
+                      onChange={(e) => setFormDate(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:border-[#00D2FF]"
+                    />
+                  </div>
 
-                    <div>
-                      <label className="block text-[11px] font-medium text-[#6B6459] uppercase tracking-wide mb-1.5">
-                        Data Preferencial
-                      </label>
-                      <input
-                        type="date"
-                        value={formDate}
-                        onChange={(e) => setFormDate(e.target.value)}
-                        className="w-full px-3.5 py-3 rounded-lg bg-white border border-[#E2DBD0] text-[13px] text-[#1C1B18] focus:outline-none focus:border-[#B86B43] transition-all"
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                      Mensagem ou Questão
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={formMessage}
+                      onChange={(e) => setFormMessage(e.target.value)}
+                      placeholder="Gostaria de agendar visita e receber a tabela oficial de lançamento..."
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#00D2FF]"
+                    />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-4 px-6 rounded-xl bg-[#B86B43] hover:bg-[#9E5B36] text-white font-semibold text-[13.5px] tracking-wide transition-all shadow-md hover:shadow-lg hover:shadow-[#B86B43]/20 cursor-pointer"
+                    className="w-full py-4 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] hover:from-[#4C1D95] hover:to-[#004085] text-white font-bold text-xs uppercase tracking-widest transition-all shadow-xl shadow-blue-500/30 cursor-pointer flex items-center justify-center gap-2"
                   >
-                    Confirmar Solicitação · Aceder à Tabela de Preços
+                    <Send className="w-4 h-4" />
+                    <span>Confirmar Agendamento de Visita</span>
                   </button>
                 </form>
-
               ) : (
-                <div className="py-8 px-4 text-center space-y-5">
-                  <div className="w-14 h-14 rounded-full bg-[#2E5A3C]/15 text-[#2E5A3C] flex items-center justify-center mx-auto">
+                <div className="py-8 text-center space-y-3">
+                  <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <div className="space-y-2">
-                    <span className="font-mono-spec text-xs uppercase tracking-widest text-[#B86B43]">
-                      SOLICITAÇÃO REGISTADA COM PRIORIDADE VIP
-                    </span>
-                    <h3 className="font-serif-editorial text-3xl text-[#1C1B18]">
-                      Obrigado, {formName}. O seu atendimento foi reservado.
-                    </h3>
-                    <p className="text-sm text-[#666159] max-w-lg mx-auto">
-                      O nosso consultor sénior entrará em contacto através do número{' '}
-                      <strong className="text-[#1C1B18]">{formPhone}</strong> com a proposta
-                      detalhada para a tipologia <strong className="text-[#1C1B18]">{formTypology}</strong>.
-                    </p>
-                  </div>
-                  <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setIsBrochureOpen(true)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#1C1B18] text-white text-xs font-mono-spec uppercase tracking-wider cursor-pointer"
-                    >
-                      <Download className="w-4 h-4" />
-                      Abrir Dossier & Tabela Agora
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormSubmitted(false)}
-                      className="px-4 py-2.5 rounded border border-[#DFD8CC] text-xs font-mono-spec uppercase tracking-wider text-[#666159] hover:text-[#1C1B18] cursor-pointer"
-                    >
-                      Nova Solicitação
-                    </button>
-                  </div>
+                  <h4 className="text-xl font-bold text-white">Pedido Recebido com Sucesso!</h4>
+                  <p className="text-xs text-slate-300 max-w-sm mx-auto">
+                    Agradecemos o seu interesse, {formName}. O nosso consultor entrará em contacto pelo número {formPhone} para confirmar a sua visita.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setFormSubmitted(false)}
+                    className="text-xs text-[#00D2FF] underline mt-2"
+                  >
+                    Enviar nova solicitação
+                  </button>
                 </div>
               )}
+            </div>
+
+            {/* Right 5 Cols: Direct WhatsApp & Phone Contacts */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="p-6 rounded-3xl bg-white/5 border border-white/15 space-y-4">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#00D2FF] block">
+                  CONTATO DIRETO IMEDIATO
+                </span>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Fale diretamente pelo WhatsApp ou ligue para a nossa equipa de vendas:
+                </p>
+
+                <div className="space-y-2.5">
+                  {OFFICIAL_PHONES.map((phone, i) => (
+                    <a
+                      key={i}
+                      href={`https://wa.me/${phone.clean}?text=Ol%C3%A1!%20Tenho%20interesse%20no%20INARA%20Residencial%20Talatona%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20e%20agendar%20visita.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 rounded-2xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 hover:border-emerald-500/50 flex items-center justify-between text-white text-xs font-mono-spec transition-all group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <MessageCircle className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <strong>{phone.display}</strong>
+                      </div>
+                      <span className="text-[10px] text-emerald-300 uppercase tracking-wider font-bold">
+                        WhatsApp →
+                      </span>
+                    </a>
+                  ))}
+                </div>
+
+                <div className="pt-3 border-t border-white/10 text-xs text-slate-300 space-y-1.5">
+                  <p>
+                    <strong>Email Oficial:</strong>{' '}
+                    <a href="mailto:vendas@inara-africa.com" className="text-[#00D2FF] underline">
+                      vendas@inara-africa.com
+                    </a>
+                  </p>
+                  <p>
+                    <strong>Stand de Vendas:</strong> Via A4A (Estrada do Rio Cambambe), Talhão 205/09 • Talatona, Luanda.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* =====================================================================
-          FOOTER
+          9. FOOTER BANNER IDÊNTICO AOS FLYERS DA CAMPANHA
       ===================================================================== */}
-      <footer className="bg-[#111310] text-[#F7F4EF]/70 border-t border-white/10 py-12 px-4 sm:px-8 text-xs">
-        <div className="max-w-[1380px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          <div className="space-y-3">
+      <div className="bg-gradient-to-r from-[#3B0764] via-[#0A256C] to-[#0052CC] text-white py-6 px-4 sm:px-8 border-t border-white/10">
+        <div className="max-w-[1380px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Phone block with icon in white rounded card */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="w-10 h-10 rounded-2xl bg-white text-[#0052CC] flex items-center justify-center shrink-0 shadow">
+              <Phone className="w-5 h-5 fill-current" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200 block">
+                CONTACTO
+              </span>
+              <div className="font-mono-spec font-bold text-xs sm:text-sm tracking-wide">
+                <span>931 943 828</span>
+                <span className="mx-2 text-blue-300">•</span>
+                <span>923 436 077</span>
+                <span className="mx-2 text-blue-300">•</span>
+                <span>931 893 859</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Email block with icon in white rounded card */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="w-10 h-10 rounded-2xl bg-white text-[#0052CC] flex items-center justify-center shrink-0 shadow">
+              <Send className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200 block">
+                Entre em Contacto
+              </span>
+              <a
+                href="mailto:vendas@inara-africa.com"
+                className="font-mono-spec font-bold text-xs sm:text-sm hover:text-[#00D2FF] transition-colors"
+              >
+                vendas@inara-africa.com
+              </a>
+            </div>
+          </div>
+
+          {/* Social block with icon in white rounded card */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="w-10 h-10 rounded-2xl bg-white text-[#0052CC] flex items-center justify-center shrink-0 shadow">
+              <Sparkles className="w-5 h-5 text-[#0052CC]" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200 block">
+                Redes Oficiais
+              </span>
+              <span className="font-bold text-xs sm:text-sm tracking-wide">
+                INARA RESIDENCIAL
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================================
+          10. FOOTER INSTITUCIONAL & LEGAL
+      ===================================================================== */}
+      <footer className="bg-slate-950 text-white border-t border-slate-800 py-12 px-4 sm:px-8">
+        <div className="max-w-[1380px] mx-auto space-y-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-lg overflow-hidden border border-white/20 bg-[#5E6470] shrink-0">
-                <img
-                  src="/media/logo/inara-emblem.jpg"
-                  alt="Emblema Oficial Inara Residencial Talatona"
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-12 h-12 rounded-2xl bg-[#0052CC] flex items-center justify-center p-2 shadow-sm">
+                <svg viewBox="0 0 40 40" className="w-full h-full" fill="none">
+                  <circle cx="20" cy="20" r="17" stroke="white" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" />
+                  <circle cx="20" cy="20" r="14" fill="#003E99" />
+                  <path
+                    d="M17 11C19 11 22 12 23 14C24 16 25 18 24 20C23 21 21 22 21 24C20.5 25.5 19 28 17.5 29C16.5 28.5 16 26.5 16.5 25C15 24 14.5 22 15 20C14 18 15 15 17 11Z"
+                    fill="white"
+                  />
+                  <circle cx="18" cy="23" r="2" fill="#00D2FF" />
+                </svg>
               </div>
               <div>
-                <span className="font-serif-editorial text-2xl text-white tracking-wider block leading-none">
-                  INARA RESIDÊNCIAL TALATONA
+                <span className="text-xl font-black block leading-none tracking-tight">
+                  INARA RESIDENCIAL TALATONA
                 </span>
-                <span className="font-mono-spec text-[10px] uppercase tracking-[0.2em] text-[#D9A86C] mt-1 block">
-                  CONDOMÍNIO PRIVADO DE 30 MORADIAS • TALATONA
+                <span className="text-xs text-slate-400 mt-1 block">
+                  Promovido por <strong>Finest Investment Partners</strong> • Financiamento <strong>Standard Bank Angola</strong>
                 </span>
               </div>
             </div>
-            <p className="text-white/60 max-w-md text-xs leading-relaxed">
-              Promovido por <strong>F.I.P. – Finest Investment Partners</strong>. Terreno urbano de 10.000 m² (31 lotes), Prédio nº 1062-Talatona da 2ª Secção da Conservatória do Registo Predial de Luanda. Contactos de Vendas: 931 893 859 / 923 436 077 / 929 120 300 • vendas@inara-africa.com.
-            </p>
+
+            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-300">
+              <button
+                onClick={() => scrollToSection('hero')}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+              >
+                Início
+              </button>
+              <button
+                onClick={() => scrollToSection('obra')}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+              >
+                Obra
+              </button>
+              <button
+                onClick={() => scrollToSection('plantas')}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+              >
+                Plantas
+              </button>
+              <button
+                onClick={() => scrollToSection('financiamento')}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+              >
+                Standard Bank
+              </button>
+              <button
+                onClick={() => scrollToSection('localizacao')}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+              >
+                Localização
+              </button>
+              <button
+                onClick={() => scrollToSection('campanha')}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer"
+              >
+                Campanha
+              </button>
+              <button
+                onClick={() => setIsBrochureOpen(true)}
+                className="hover:text-[#00D2FF] transition-colors cursor-pointer text-[#00D2FF]"
+              >
+                Brochura PDF
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 font-mono-spec text-[11px]">
-            <button
-              type="button"
-              onClick={() => setIsBrochureOpen(true)}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              DOSSIER TÉCNICO (PDF)
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsStrategyOpen(true)}
-              className="text-[#D9A86C] hover:text-white transition-colors cursor-pointer"
-            >
-              GUIA DO CONDOMÍNIO
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('implantacao')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              MASTERPLAN (10.000 m²)
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('plantas')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              MORADIAS T4 DUPLEX
-            </button>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>
+              © {new Date().getFullYear()} Inara Residencial Talatona. Todos os direitos reservados. {PROJECT_INFO.legalRegistration}.
+            </p>
+            <div className="flex items-center gap-4 font-mono-spec">
+              <span>Instagram: @INARA RESIDENCIAL</span>
+              <span>Facebook: INARA RESIDENCIAL</span>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Floating Action Buttons: WhatsApp VIP Direct + Quick Visit */}
-      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2.5">
-        {/* WhatsApp VIP Concierge Button */}
-        <a
-          href="https://wa.me/244931893859?text=Ol%C3%A1!%20Gostaria%20de%20informa%C3%A7%C3%B5es%20exclusivas%20e%20tabela%20de%20pre%C3%A7os%20do%20Residencial%20Inara%20em%20Talatona."
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#2E5A3C] hover:bg-[#23452E] text-white shadow-2xl border border-emerald-400/40 transition-all cursor-pointer group hover:scale-[1.02]"
-          title="Falar com Consultor no WhatsApp Oficial"
-        >
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-          </span>
-          <MessageCircle className="w-4 h-4 text-emerald-300 group-hover:text-white" />
-          <span className="font-mono-spec text-xs font-semibold tracking-wide">
-            WhatsApp VIP • Talatona
-          </span>
-        </a>
-
-        {/* Agendar Visita Direta */}
-        <button
-          type="button"
-          onClick={() => scrollToSection('localizacao')}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1C1B18]/90 hover:bg-[#1C1B18] text-[#F7F4EF] shadow-lg border border-white/15 text-[11px] font-mono-spec transition-all cursor-pointer"
-          title="Agendar Visita ao Terreno e Stand de Vendas"
-        >
-          <Calendar className="w-3.5 h-3.5 text-[#B86B43]" />
-          <span>Agendar Visita</span>
-        </button>
-      </div>
-
-      {/* Fullscreen Gallery Lightbox Modal */}
-      {lightboxItem && (
+      {/* =====================================================================
+          LIGHTBOX MODAL FOR CAMPAIGN ASSETS
+      ===================================================================== */}
+      {lightboxAsset && (
         <div
-          className="fixed inset-0 z-50 bg-[#151814]/95 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setLightboxItem(null)}
+          onClick={() => setLightboxAsset(null)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn cursor-pointer"
         >
           <div
-            className="relative max-w-5xl w-full bg-[#1C1B18] rounded-lg overflow-hidden border border-white/15"
             onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl max-h-[92vh] w-full bg-slate-900 rounded-3xl overflow-hidden border border-slate-700 shadow-2xl flex flex-col"
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 text-white">
+            <div className="flex items-center justify-between px-6 py-4 bg-slate-950 border-b border-slate-800 text-white">
               <div>
-                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                  {lightboxItem.category}
+                <span className="text-[10px] uppercase font-bold tracking-widest text-[#00D2FF] block">
+                  {lightboxAsset.categoryLabel} • {lightboxAsset.badge}
                 </span>
-                <h4 className="font-serif-editorial text-2xl">{lightboxItem.title}</h4>
+                <h4 className="text-base font-bold">{lightboxAsset.title}</h4>
               </div>
               <button
-                type="button"
-                onClick={() => setLightboxItem(null)}
-                className="p-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <img
-              src={lightboxItem.image}
-              alt={lightboxItem.title}
-              className="w-full max-h-[72vh] object-cover"
-            />
-            <div className="p-4 bg-[#151814] text-xs text-white/80 flex items-center justify-between">
-              <span>{lightboxItem.caption}</span>
-              <span className="font-mono-spec text-[#D9A86C]">RESIDENCIAL INARA</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Fullscreen Video Modal */}
-      {videoModal && (
-        <div
-          className="fixed inset-0 z-50 bg-[#151814]/95 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setVideoModal(null)}
-        >
-          <div
-            className="relative max-w-5xl w-full bg-[#1C1B18] rounded-lg overflow-hidden border border-white/20 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-6 py-4 bg-[#151814] border-b border-white/10 text-white">
-              <div>
-                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                  {videoModal.subtitle || 'VÍDEO OFICIAL RESIDENCIAL INARA'}
-                </span>
-                <h4 className="font-serif-editorial text-2xl">{videoModal.title}</h4>
-              </div>
-              <button
-                type="button"
-                onClick={() => setVideoModal(null)}
-                className="p-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
-                aria-label="Fechar vídeo"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="aspect-[16/9] w-full bg-black">
-              <video
-                src={videoModal.url}
-                controls
-                autoPlay
-                playsInline
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Fullscreen Interior Decorado Lightbox Modal with Next/Prev Arrows */}
-      {selectedDecoradoIndex !== null && (
-        <div
-          className="fixed inset-0 z-50 bg-[#151814]/95 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setSelectedDecoradoIndex(null)}
-        >
-          <div
-            className="relative max-w-5xl w-full bg-[#1C1B18] rounded-lg overflow-hidden border border-white/20 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 text-white">
-              <div>
-                <span className="font-mono-spec text-[10px] uppercase tracking-widest text-[#D9A86C] block">
-                  COLEÇÃO DE INTERIORES DECORADOS • AMBIENTE {String(selectedDecoradoIndex + 1).padStart(2, '0')} DE 43
-                </span>
-                <h4 className="font-serif-editorial text-2xl">
-                  {INTERIOR_DECORADO_IMAGES[selectedDecoradoIndex].title}
-                </h4>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedDecoradoIndex(null)}
-                className="p-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
-                aria-label="Fechar galeria"
+                onClick={() => setLightboxAsset(null)}
+                className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="relative flex items-center justify-center bg-black/40">
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-black/50">
               <img
-                src={INTERIOR_DECORADO_IMAGES[selectedDecoradoIndex].src}
-                alt={INTERIOR_DECORADO_IMAGES[selectedDecoradoIndex].title}
-                className="w-full max-h-[72vh] object-contain"
+                src={lightboxAsset.src}
+                alt={lightboxAsset.title}
+                className="max-h-[75vh] w-auto object-contain rounded-xl shadow-2xl"
               />
-
-              {/* Prev Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedDecoradoIndex((prev) =>
-                    prev !== null && prev > 0 ? prev - 1 : INTERIOR_DECORADO_IMAGES.length - 1
-                  );
-                }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#151814]/80 hover:bg-[#B86B43] text-white flex items-center justify-center border border-white/20 transition-all cursor-pointer shadow-lg"
-                aria-label="Ambiente anterior"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              {/* Next Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedDecoradoIndex((prev) =>
-                    prev !== null && prev < INTERIOR_DECORADO_IMAGES.length - 1 ? prev + 1 : 0
-                  );
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#151814]/80 hover:bg-[#B86B43] text-white flex items-center justify-center border border-white/20 transition-all cursor-pointer shadow-lg"
-                aria-label="Próximo ambiente"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
             </div>
 
-            <div className="p-4 bg-[#151814] text-xs text-white/80 flex items-center justify-between">
-              <span>Utilize as setas para percorrer os 43 ambientes decorados em alta resolução.</span>
-              <span className="font-mono-spec text-[#D9A86C]">RESIDENCIAL INARA</span>
+            <div className="px-6 py-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <span>{lightboxAsset.subtitle}</span>
+              <a
+                href={lightboxAsset.src}
+                download
+                className="px-4 py-2 rounded-full bg-[#0052CC] hover:bg-[#004085] text-white font-bold transition-colors"
+              >
+                Descarregar Original
+              </a>
             </div>
           </div>
         </div>
       )}
 
-      {/* Brochure Executive Modal */}
+      {/* Brochure Dossier Modal */}
       <BrochureModal
         isOpen={isBrochureOpen}
         onClose={() => setIsBrochureOpen(false)}
@@ -2487,7 +1635,7 @@ export function App() {
         cityLabel={customCity}
       />
 
-      {/* Strategy & Market Customizer Drawer */}
+      {/* Strategic Advisor Modal */}
       <StrategyAdvisorModal
         isOpen={isStrategyOpen}
         onClose={() => setIsStrategyOpen(false)}
@@ -2499,4 +1647,3 @@ export function App() {
     </div>
   );
 }
-export default App;

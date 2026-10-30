@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Montserrat', sans-serif;
   --font-mono: 'DM Mono', 'Courier New', monospace;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Montserrat', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {
   :root {
-    --bg-travertine: #F7F4EF;
-    --bg-sandstone: #EFEAE1;
-    --bg-obsidian: #151814;
-    --text-espresso: #1C1B18;
-    --text-taupe: #6B6459;
-    --accent-terracotta: #B86B43;
-    --accent-olive: #3A4D3E;
-    --border-limestone: #E2DBD0;
+    --brand-blue: #0052CC;
+    --brand-blue-deep: #0A256C;
+    --brand-cyan: #00A3FF;
+    --brand-cyan-light: #00D2FF;
+    --brand-purple: #581C87;
+    --brand-purple-dark: #3B0764;
+    --brand-navy: #061129;
+    --brand-light: #F0F6FF;
+    --text-primary: #0F172A;
+    --text-muted: #475569;
+    --border-color: #E2E8F0;
   }
 
   html {
@@ -23,84 +26,80 @@
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #F7F4EF;
-    color: #1C1B18;
+    font-family: 'Montserrat', 'Poppins', -apple-system, sans-serif !important;
+    background-color: #FFFFFF;
+    color: #0F172A;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   }
 
-  /* Premium serif editorial headings */
-  h1, h2, h3, .font-serif-editorial {
-    font-family: 'Playfair Display', Georgia, serif !important;
-    letter-spacing: -0.01em;
+  /* Headings with high impact - clean geometric Montserrat matching the official campaign identity */
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-brand, .font-serif-editorial {
+    font-family: 'Montserrat', sans-serif !important;
+    letter-spacing: -0.025em;
   }
 
-  /* Refined monospace for specs and labels */
   .font-mono-spec {
     font-family: 'DM Mono', monospace !important;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.01em;
   }
 
-  /* Premium selection color */
   ::selection {
-    background-color: rgba(184, 107, 67, 0.18);
-    color: #1C1B18;
+    background-color: rgba(0, 82, 204, 0.22);
+    color: #0052CC;
   }
 }
 
-/* ── Architectural subtle grid backgrounds ──────────────────── */
+/* ── Inara Brand Gradients & Accents ────────────────────────── */
+.gradient-inara {
+  background: linear-gradient(135deg, #0052CC 0%, #0066FF 45%, #4C1D95 100%);
+}
+
+.gradient-inara-card {
+  background: linear-gradient(145deg, #0052CC 0%, #3B0764 100%);
+}
+
+.gradient-cyan-blue {
+  background: linear-gradient(135deg, #00D2FF 0%, #0052CC 100%);
+}
+
+.gradient-light-blue {
+  background: linear-gradient(180deg, #F0F7FF 0%, #FFFFFF 100%);
+}
+
+.shadow-inara {
+  box-shadow: 0 15px 35px -10px rgba(0, 82, 204, 0.22);
+}
+
+.shadow-inara-lg {
+  box-shadow: 0 25px 50px -12px rgba(59, 7, 100, 0.25);
+}
+
+/* ── Blueprint & Grid Accents ──────────────────────────────── */
 .blueprint-grid {
   background-image:
-    linear-gradient(to right, rgba(28, 27, 24, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(28, 27, 24, 0.035) 1px, transparent 1px);
+    linear-gradient(to right, rgba(0, 82, 204, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 82, 204, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 .blueprint-grid-dark {
   background-image:
-    linear-gradient(to right, rgba(247, 244, 239, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(247, 244, 239, 0.045) 1px, transparent 1px);
+    linear-gradient(to right, rgba(0, 163, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 163, 255, 0.08) 1px, transparent 1px);
   background-size: 36px 36px;
 }
 
-/* ── Hotspot pulse animation ─────────────────────────────────── */
-@keyframes pulseRing {
-  0% {
-    transform: scale(0.92);
-    opacity: 0.9;
-  }
-  70% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
-
-.hotspot-pulse::after {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  border-radius: 9999px;
-  border: 1.5px solid #B86B43;
-  animation: pulseRing 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  pointer-events: none;
-}
-
-/* ── Premium form inputs ─────────────────────────────────────── */
+/* ── Inputs ──────────────────────────────────────────────────── */
 input[type="text"],
 input[type="tel"],
 input[type="email"],
 input[type="date"],
 select,
 textarea {
+  font-family: 'Outfit', 'Montserrat', sans-serif;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -111,11 +110,29 @@ input[type="date"]:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: #B86B43 !important;
-  box-shadow: 0 0 0 3px rgba(184, 107, 67, 0.12);
+  border-color: #0052CC !important;
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.18);
 }
 
-/* ── Smooth fade-in for page load ───────────────────────────── */
+/* ── Scrollbars ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94A3B8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0052CC;
+}
+
+/* ── Smooth Fade Animation ───────────────────────────────────── */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -128,60 +145,5 @@ textarea:focus {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ── Luxury horizontal rule separator ───────────────────────── */
-.section-divider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: #B86B43;
-  opacity: 0.5;
-}
-
-.section-divider::before,
-.section-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: currentColor;
-}
-
-/* ── Elegant scrollbar ──────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #EFEAE1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #DFD8CC;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #B86B43;
-}
-
-/* ── Image hover subtle zoom ─────────────────────────────────── */
-.img-hover-zoom {
-  overflow: hidden;
-}
-
-.img-hover-zoom img {
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.img-hover-zoom:hover img {
-  transform: scale(1.04);
-}
-
-/* ── Number/stat display ─────────────────────────────────────── */
-.stat-number {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-feature-settings: "lnum" 1;
-  line-height: 1;
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
