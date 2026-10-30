@@ -303,16 +303,17 @@ export default function App() {
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-20 sm:h-24 flex items-center justify-between">
           {/* Dual Brand: Inara Residencial Talatona + Finest Investment Partners */}
           <div className="flex items-center gap-4 sm:gap-6">
-            {/* Logomarca Oficial INARA Residencial Talatona */}
+            {/* Logomarca Oficial INARA Residencial Talatona (Original com cores e organizacao exatas) */}
             <button
               type="button"
               onClick={() => scrollToSection('hero')}
               className="flex items-center group cursor-pointer"
+              title="INARA Residêncial Talatona"
             >
               <img
-                src="/media/logo/inara-logo-horizontal-blue.png"
+                src="/media/logo/inara-logomarca-oficial.jpg"
                 alt="INARA RESIDÊNCIAL TALATONA"
-                className="h-11 sm:h-13 w-auto object-contain group-hover:scale-102 transition-transform"
+                className="h-14 sm:h-18 w-auto rounded-xl shadow-sm border border-slate-200/80 object-contain group-hover:scale-105 transition-transform"
               />
             </button>
 
@@ -1480,16 +1481,16 @@ export default function App() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-center gap-4">
               <img
-                src="/media/logo/inara-logo-horizontal-white.png"
+                src="/media/logo/inara-logomarca-oficial.jpg"
                 alt="INARA RESIDÊNCIAL TALATONA"
-                className="h-12 sm:h-14 w-auto object-contain"
+                className="h-16 sm:h-20 w-auto rounded-xl shadow-lg border border-slate-700/80 object-contain"
               />
               <div className="border-l border-slate-800 pl-4 hidden sm:block">
-                <span className="text-xs text-slate-400 block leading-tight">
-                  Promovido por <strong>Finest Investment Partners</strong>
+                <span className="text-base font-black text-white block leading-tight tracking-wide">
+                  INARA RESIDENCIAL TALATONA
                 </span>
-                <span className="text-xs text-slate-400 block leading-tight mt-0.5">
-                  Financiamento <strong>Standard Bank Angola</strong>
+                <span className="text-xs text-slate-400 block leading-tight mt-1">
+                  Promovido por <strong>Finest Investment Partners</strong> • Financiamento <strong>Standard Bank Angola</strong>
                 </span>
               </div>
             </div>

@@ -33,9 +33,9 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#0052CC] via-[#0066FF] to-[#3B0764] text-white border-b border-white/10">
           <div className="flex items-center gap-3">
             <img
-              src="/media/logo/inara-logo-horizontal-white.png"
+              src="/media/logo/inara-logomarca-oficial.jpg"
               alt="INARA RESIDÊNCIAL TALATONA"
-              className="h-9 sm:h-10 w-auto object-contain"
+              className="h-12 w-auto rounded-lg shadow-sm border border-white/20 object-contain"
             />
             <div className="border-l border-white/20 pl-3">
               <span className="text-[10px] font-mono-spec uppercase tracking-widest text-[#00D2FF] block font-bold">
