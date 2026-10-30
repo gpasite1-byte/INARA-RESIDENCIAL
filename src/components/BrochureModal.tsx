@@ -32,10 +32,10 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
         {/* Top Bar */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#0052CC] via-[#0066FF] to-[#3B0764] text-white border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/20 bg-[#0F1E36] shrink-0 p-1">
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-white/10 p-1 shrink-0 flex items-center justify-center">
               <img
-                src="/media/campaign/Adobe Express - file.jpg"
-                alt="Emblema Inara Residencial Talatona"
+                src="/media/logo/inara-emblem-white.png"
+                alt="Logomarca Inara Residencial Talatona"
                 className="w-full h-full object-contain"
               />
             </div>

@@ -14,6 +14,7 @@ export default defineConfig({
   server: {
     watch: {
       ignored: [
+        '**/dist/**',
         '**/Imagem Vulante/**',
         '**/IMAGENS INARA/**',
         '**/www.duckbillcookies.com.br/**',

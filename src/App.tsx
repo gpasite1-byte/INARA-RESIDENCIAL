@@ -303,28 +303,18 @@ export default function App() {
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-20 sm:h-24 flex items-center justify-between">
           {/* Dual Brand: Inara Residencial Talatona + Finest Investment Partners */}
           <div className="flex items-center gap-4 sm:gap-6">
-            {/* Inara Brand Logo with Globe Icon */}
+            {/* Inara Brand Logo with Official Logomarca */}
             <button
               type="button"
               onClick={() => scrollToSection('hero')}
-              className="flex items-center gap-3 group text-left cursor-pointer"
+              className="flex items-center gap-3.5 group text-left cursor-pointer"
             >
-              {/* Official Inara Globe Emblem (Africa Illuminated) */}
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#0052CC] p-2 flex items-center justify-center shadow-md shadow-blue-500/20 group-hover:bg-[#004085] transition-all">
-                <svg viewBox="0 0 40 40" className="w-full h-full" fill="none">
-                  {/* Globe outline circle */}
-                  <circle cx="20" cy="20" r="17" stroke="white" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" />
-                  <circle cx="20" cy="20" r="14" fill="#003E99" />
-                  {/* Stylized African continent silhouette */}
-                  <path
-                    d="M17 11C19 11 22 12 23 14C24 16 25 18 24 20C23 21 21 22 21 24C20.5 25.5 19 28 17.5 29C16.5 28.5 16 26.5 16.5 25C15 24 14.5 22 15 20C14 18 15 15 17 11Z"
-                    fill="white"
-                  />
-                  {/* Angola highlight point */}
-                  <circle cx="18" cy="23" r="2" fill="#00D2FF" />
-                  <circle cx="18" cy="23" r="3.5" stroke="#00D2FF" strokeWidth="1" opacity="0.8" />
-                </svg>
-              </div>
+              {/* Official Inara Globe Emblem from WhatsApp Image 2026-09-22 at 09.19.11 */}
+              <img
+                src="/media/logo/inara-emblem-blue.png"
+                alt="Logomarca Inara Residencial Talatona"
+                className="w-11 h-11 sm:w-13 sm:h-13 object-contain group-hover:scale-105 transition-transform shrink-0"
+              />
 
               <div>
                 <span className="block text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-none">
@@ -1499,17 +1489,11 @@ export default function App() {
         <div className="max-w-[1380px] mx-auto space-y-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-[#0052CC] flex items-center justify-center p-2 shadow-sm">
-                <svg viewBox="0 0 40 40" className="w-full h-full" fill="none">
-                  <circle cx="20" cy="20" r="17" stroke="white" strokeWidth="2" strokeDasharray="3 3" opacity="0.6" />
-                  <circle cx="20" cy="20" r="14" fill="#003E99" />
-                  <path
-                    d="M17 11C19 11 22 12 23 14C24 16 25 18 24 20C23 21 21 22 21 24C20.5 25.5 19 28 17.5 29C16.5 28.5 16 26.5 16.5 25C15 24 14.5 22 15 20C14 18 15 15 17 11Z"
-                    fill="white"
-                  />
-                  <circle cx="18" cy="23" r="2" fill="#00D2FF" />
-                </svg>
-              </div>
+              <img
+                src="/media/logo/inara-emblem-white.png"
+                alt="Logomarca Oficial Inara Residencial"
+                className="w-12 h-12 sm:w-14 sm:h-14 object-contain shrink-0"
+              />
               <div>
                 <span className="text-xl font-black block leading-none tracking-tight">
                   INARA RESIDENCIAL TALATONA
