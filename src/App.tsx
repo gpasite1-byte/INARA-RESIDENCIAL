@@ -303,27 +303,17 @@ export default function App() {
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-20 sm:h-24 flex items-center justify-between">
           {/* Dual Brand: Inara Residencial Talatona + Finest Investment Partners */}
           <div className="flex items-center gap-4 sm:gap-6">
-            {/* Inara Brand Logo with Official Logomarca */}
+            {/* Logomarca Oficial INARA Residencial Talatona */}
             <button
               type="button"
               onClick={() => scrollToSection('hero')}
-              className="flex items-center gap-3.5 group text-left cursor-pointer"
+              className="flex items-center group cursor-pointer"
             >
-              {/* Official Inara Globe Emblem from WhatsApp Image 2026-09-22 at 09.19.11 */}
               <img
-                src="/media/logo/inara-emblem-blue.png"
-                alt="Logomarca Inara Residencial Talatona"
-                className="w-11 h-11 sm:w-13 sm:h-13 object-contain group-hover:scale-105 transition-transform shrink-0"
+                src="/media/logo/inara-logo-horizontal-blue.png"
+                alt="INARA RESIDÊNCIAL TALATONA"
+                className="h-11 sm:h-13 w-auto object-contain group-hover:scale-102 transition-transform"
               />
-
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-none">
-                  INARA
-                </span>
-                <span className="block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.25em] text-[#0052CC] mt-1">
-                  RESIDÊNCIAL · TALATONA
-                </span>
-              </div>
             </button>
 
             <div className="hidden lg:block h-10 w-px bg-slate-200" />
@@ -1488,18 +1478,18 @@ export default function App() {
       <footer className="bg-slate-950 text-white border-t border-slate-800 py-12 px-4 sm:px-8">
         <div className="max-w-[1380px] mx-auto space-y-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-slate-800">
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-4">
               <img
-                src="/media/logo/inara-emblem-white.png"
-                alt="Logomarca Oficial Inara Residencial"
-                className="w-12 h-12 sm:w-14 sm:h-14 object-contain shrink-0"
+                src="/media/logo/inara-logo-horizontal-white.png"
+                alt="INARA RESIDÊNCIAL TALATONA"
+                className="h-12 sm:h-14 w-auto object-contain"
               />
-              <div>
-                <span className="text-xl font-black block leading-none tracking-tight">
-                  INARA RESIDENCIAL TALATONA
+              <div className="border-l border-slate-800 pl-4 hidden sm:block">
+                <span className="text-xs text-slate-400 block leading-tight">
+                  Promovido por <strong>Finest Investment Partners</strong>
                 </span>
-                <span className="text-xs text-slate-400 mt-1 block">
-                  Promovido por <strong>Finest Investment Partners</strong> • Financiamento <strong>Standard Bank Angola</strong>
+                <span className="text-xs text-slate-400 block leading-tight mt-0.5">
+                  Financiamento <strong>Standard Bank Angola</strong>
                 </span>
               </div>
             </div>

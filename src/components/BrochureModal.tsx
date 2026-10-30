@@ -32,18 +32,16 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
         {/* Top Bar */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#0052CC] via-[#0066FF] to-[#3B0764] text-white border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden bg-white/10 p-1 shrink-0 flex items-center justify-center">
-              <img
-                src="/media/logo/inara-emblem-white.png"
-                alt="Logomarca Inara Residencial Talatona"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div>
+            <img
+              src="/media/logo/inara-logo-horizontal-white.png"
+              alt="INARA RESIDÊNCIAL TALATONA"
+              className="h-9 sm:h-10 w-auto object-contain"
+            />
+            <div className="border-l border-white/20 pl-3">
               <span className="text-[10px] font-mono-spec uppercase tracking-widest text-[#00D2FF] block font-bold">
                 DOSSIER TÉCNICO & COMERCIAL • EDIÇÃO OFICIAL 2026
               </span>
-              <h3 className="text-lg font-bold tracking-wide">
+              <h3 className="text-sm sm:text-base font-bold tracking-wide">
                 Brochura Digital — Inara Residencial Talatona
               </h3>
             </div>
