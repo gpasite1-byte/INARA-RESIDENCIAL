@@ -59,7 +59,7 @@ const HERO_COVER_SCENES: HeroCoverScene[] = [
     id: 'fachada-dourada',
     title: 'Fachada Principal ao Pôr-do-Sol',
     period: 'Fachada & Alameda',
-    src: '/media/showcase/inara-fachada-dourada.jpg',
+    src: '/media/showcase/inara-fachada-alameda.png',
     type: 'image',
     badge: '30 Moradias Duplex',
     description: 'Arquitetura moderna com volumetria elegante, caixilharia ampla e acabamentos contemporâneos.',
@@ -217,6 +217,49 @@ export default function App() {
   const [formMessage, setFormMessage] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  useEffect(() => {
+    const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    const taglineWords = document.querySelectorAll<HTMLElement>('[data-tagline-word]');
+
+    if (!('IntersectionObserver' in window)) {
+      revealTargets.forEach((element) => element.classList.add('is-visible'));
+      taglineWords.forEach((element) => element.classList.add('is-active'));
+      return;
+    }
+
+    const sectionObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    const wordObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-active');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5, rootMargin: '0px 0px -12% 0px' }
+    );
+
+    revealTargets.forEach((element) => sectionObserver.observe(element));
+    taglineWords.forEach((element) => wordObserver.observe(element));
+
+    return () => {
+      sectionObserver.disconnect();
+      wordObserver.disconnect();
+    };
+  }, []);
+
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
@@ -299,7 +342,7 @@ export default function App() {
       {/* =====================================================================
           MAIN HEADER & NAVIGATION (Dual Brand Identity & Clean Montserrat Font)
       ===================================================================== */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all">
+      <header className="site-header sticky top-3 z-40 mx-3 rounded-2xl border border-white/70 bg-white/90 shadow-lg shadow-slate-900/5 backdrop-blur-xl transition-all sm:mx-auto sm:w-[calc(100%-4rem)] sm:max-w-[1380px]">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 h-20 sm:h-24 flex items-center justify-between">
           {/* Dual Brand: Inara Residencial Talatona + Finest Investment Partners */}
           <div className="flex items-center gap-4 sm:gap-6">
@@ -320,60 +363,60 @@ export default function App() {
             <div className="hidden lg:block h-10 w-px bg-slate-200" />
 
             {/* Finest Investment Partners Official Sub-Brand */}
-            <div className="hidden lg:flex items-center gap-2.5">
+            <div className="hidden lg:flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#581C87] via-[#0052CC] to-[#00D2FF] p-0.5 flex items-center justify-center shadow-xs">
                 <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-                  <span className="text-[#0052CC] font-black text-xs leading-none">F</span>
+                  <span className="text-[#0052CC] font-bold text-xs leading-none">F</span>
                 </div>
               </div>
-              <div>
-                <span className="block text-[11px] font-extrabold text-slate-900 tracking-wider uppercase leading-tight">
+              <div className="leading-none">
+                <span className="block text-[12.5px] font-extrabold text-slate-900 tracking-[0.2em] uppercase">
                   FINEST
                 </span>
-                <span className="block text-[8px] font-semibold text-slate-500 uppercase tracking-widest leading-none">
-                  INVESTMENT PARTNERS
+                <span className="block mt-1 text-[9.5px] font-bold text-slate-600 uppercase tracking-[0.14em]">
+                  Investment Partners
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Desktop Nav Links (Clean Montserrat Typography) */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 font-bold text-xs uppercase tracking-wider text-slate-700">
+          {/* Desktop Nav Links (Bold Plus Jakarta Sans Typography) */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-7 font-bold text-[13.5px] text-slate-800">
             <button
               onClick={() => scrollToSection('hero')}
-              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+              className="nav-link hover:text-[#0052CC] transition-colors cursor-pointer py-1"
             >
               Início
             </button>
             <button
               onClick={() => scrollToSection('obra')}
-              className="hover:text-[#0052CC] transition-colors cursor-pointer flex items-center gap-1.5 py-1"
+              className="nav-link hover:text-[#0052CC] transition-colors cursor-pointer flex items-center gap-1.5 py-1"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>A Obra Real</span>
             </button>
             <button
               onClick={() => scrollToSection('plantas')}
-              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+              className="nav-link hover:text-[#0052CC] transition-colors cursor-pointer py-1"
             >
               Moradias T4
             </button>
             <button
               onClick={() => scrollToSection('financiamento')}
-              className="hover:text-[#0052CC] transition-colors cursor-pointer text-[#0052CC] py-1 font-extrabold flex items-center gap-1.5"
+              className="nav-link hover:text-[#0052CC] transition-colors cursor-pointer text-[#0052CC] py-1 font-extrabold flex items-center gap-1.5"
             >
               <Landmark className="w-3.5 h-3.5" />
               <span>Standard Bank</span>
             </button>
             <button
               onClick={() => scrollToSection('localizacao')}
-              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+              className="nav-link hover:text-[#0052CC] transition-colors cursor-pointer py-1"
             >
               Localização
             </button>
             <button
               onClick={() => scrollToSection('campanha')}
-              className="hover:text-[#0052CC] transition-colors cursor-pointer py-1"
+              className="nav-link hover:text-[#0052CC] transition-colors cursor-pointer py-1"
             >
               A Campanha
             </button>
@@ -384,7 +427,7 @@ export default function App() {
             <button
               type="button"
               onClick={() => setIsBrochureOpen(true)}
-              className="px-4 py-2.5 rounded-full border border-slate-300 hover:border-[#0052CC] text-slate-700 hover:text-[#0052CC] text-xs font-bold tracking-wide transition-all cursor-pointer flex items-center gap-2"
+              className="px-4 py-2.5 rounded-full border border-slate-300 hover:border-[#0052CC] text-slate-800 hover:text-[#0052CC] text-[13px] font-bold tracking-[-0.01em] transition-all cursor-pointer flex items-center gap-2"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Brochura PDF</span>
@@ -393,7 +436,7 @@ export default function App() {
             <button
               type="button"
               onClick={() => scrollToSection('agendar')}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] hover:from-[#4C1D95] hover:to-[#004085] text-white text-xs font-bold tracking-wide transition-all shadow-md shadow-blue-500/20 hover:shadow-lg cursor-pointer flex items-center gap-2"
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] hover:from-[#4C1D95] hover:to-[#004085] text-white text-[13px] font-bold tracking-[-0.01em] transition-all shadow-md shadow-blue-500/20 hover:shadow-lg cursor-pointer flex items-center gap-2"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Agendar Visita</span>
@@ -413,7 +456,7 @@ export default function App() {
         {/* Mobile Dropdown */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-b border-slate-200 px-6 py-6 space-y-4">
-            <div className="flex flex-col gap-3 font-bold text-sm uppercase tracking-wider text-slate-800">
+            <div className="flex flex-col gap-3 font-bold text-[15px] text-slate-800">
               <button
                 onClick={() => scrollToSection('hero')}
                 className="text-left py-2 hover:text-[#0052CC]"
@@ -477,14 +520,14 @@ export default function App() {
       {/* =====================================================================
           1. HERO COVER (Clean Architectural & Lifestyle Showcase - 100% Free of Embedded Text)
       ===================================================================== */}
-      <section id="hero" className="relative min-h-[88vh] lg:min-h-[94vh] flex items-center overflow-hidden bg-[#0A1A3A]">
+      <section id="hero" className="hero-section relative min-h-[88vh] lg:min-h-[94vh] flex items-start overflow-hidden bg-[#0A1A3A]">
         {/* Background Clean Media Layer (100% Text-Free Architectural Visuals) */}
         <div className="absolute inset-0 z-0">
           {HERO_COVER_SCENES.map((scene, idx) => (
             <div
               key={scene.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                idx === activeCoverIdx ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              className={`hero-scene absolute inset-0 ${
+                idx === activeCoverIdx ? 'is-active opacity-100' : 'opacity-0 pointer-events-none'
               }`}
             >
               {scene.type === 'video' ? (
@@ -493,7 +536,7 @@ export default function App() {
                   loop
                   muted
                   playsInline
-                  className="w-full h-full object-cover object-center"
+                  className="hero-cover-image w-full h-full object-cover object-center"
                 >
                   <source src={scene.src} type="video/mp4" />
                 </video>
@@ -501,185 +544,67 @@ export default function App() {
                 <img
                   src={scene.src}
                   alt={scene.title}
-                  className="w-full h-full object-cover object-center"
+                  fetchPriority={idx === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                  className="hero-cover-image w-full h-full object-cover object-center"
                 />
               )}
-              {/* Luminous royal blue/slate gradient: clear text readability on left; architecture visible on right */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#07132C]/95 via-[#0A1A3A]/85 to-[#07132C]/40 lg:w-3/4" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07132C]/90 via-transparent to-transparent sm:hidden" />
+              {/* A restrained overlay keeps the architecture visible while preserving contrast. */}
+              <div className="hero-image-shade absolute inset-0" />
             </div>
           ))}
         </div>
 
-        {/* Hero Foreground Grid */}
-        <div className="relative z-10 max-w-[1380px] w-full mx-auto px-4 sm:px-8 py-16 sm:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left 7 Cols: Punchy Campaign Headlines in Montserrat */}
-            <div className="lg:col-span-7 space-y-6">
-              {/* Location Pill Banner */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#00D2FF] text-xs font-bold tracking-wider uppercase">
-                <MapPin className="w-3.5 h-3.5 text-[#00D2FF]" />
-                <span>Talatona • Via A4A (Estrada do Rio Cambambe)</span>
-              </div>
+        {/* Subtle Inara Watermark on Cover Image */}
+        <img
+          src="/media/logo/inara-logo-horizontal-white.png"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute top-6 right-5 sm:top-10 sm:right-10 z-10 w-40 sm:w-56 lg:w-72 h-auto opacity-55 drop-shadow-[0_4px_14px_rgba(7,19,44,0.45)]"
+        />
 
-              {/* Main Headline (Clean Montserrat Bold Typography matching the flyers) */}
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.08] tracking-tight">
-                Morar bem também é <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D2FF] via-[#38BDF8] to-[#93C5FD]">
-                  estar bem localizado
-                </span>
-              </h1>
-
-              {/* Official Slogan Pill from Flyer 2 & 4 */}
-              <div className="inline-flex flex-wrap items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-[#0052CC] to-[#00A3FF] text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20">
-                <span className="tracking-wide">→ INARA Residencial Talatona</span>
-                <span className="text-blue-100 font-normal">| Sua casa dos sonhos é agora uma realidade</span>
-              </div>
-
-              {/* Campaign Narrative */}
-              <p className="text-base sm:text-lg text-slate-200 font-normal leading-relaxed max-w-xl">
-                Mais do que uma moradia, um estilo de vida de excelência. Condomínio privado de <strong>30 moradias T4 Duplex unifamiliares de 217 m²</strong> com 4 suítes, piscina privativa individual e clube exclusivo no Lote 31.
-              </p>
-
-              {/* 3 Core Trust Pillars */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 text-white/95 text-xs sm:text-sm font-semibold">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00D2FF] shrink-0" />
-                  <span>30 Moradias T4 Duplex</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00D2FF] shrink-0" />
-                  <span>Terreno de 10.000 m²</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#00D2FF] shrink-0" />
-                  <span>Standard Bank Angola</span>
-                </div>
-              </div>
-
-              {/* High-Impact Campaign Buttons */}
-              <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('agendar')}
-                  className="inline-flex items-center justify-center gap-3 px-7 py-4 rounded-full bg-gradient-to-r from-[#581C87] to-[#0052CC] hover:from-[#4C1D95] hover:to-[#004085] text-white text-sm font-bold tracking-wide transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02] cursor-pointer"
-                >
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                    <Calendar className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  <span>Agende já a sua visita e descubra o seu futuro lar</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('financiamento')}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white text-sm font-bold transition-all cursor-pointer"
-                >
-                  <Landmark className="w-4 h-4 text-[#00D2FF]" />
-                  <span>Financiamento Standard Bank</span>
-                </button>
-              </div>
+        <div className="hero-content relative z-10 mx-auto flex w-full max-w-[1380px] px-4 pt-8 pb-20 sm:px-8 sm:pt-12 lg:pt-14">
+          <div className="hero-copy space-y-3 rounded-2xl p-4 text-white sm:space-y-3.5 sm:p-6">
+            <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/85 sm:text-[11px]">
+              <MapPin className="h-3.5 w-3.5 text-[#B8D9FF]" />
+              <span>Via A4A · Talatona, Luanda</span>
             </div>
 
-            {/* Right 5 Cols: Interactive Floating Lifestyle Vignette Card (Flyer 2 Motif) */}
-            <div className="lg:col-span-5 hidden lg:block">
-              <div className="rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 shadow-2xl text-white space-y-6">
-                <div className="flex items-center justify-between border-b border-white/15 pb-4">
-                  <div>
-                    <span className="text-[11px] font-mono-spec uppercase tracking-wider text-[#00D2FF] block font-bold">
-                      INARA RESIDENCIAL TALATONA
-                    </span>
-                    <h3 className="text-xl font-bold text-white mt-0.5">
-                      Viver bem não é sorte, é uma escolha.
-                    </h3>
-                  </div>
-                  <div className="w-9 h-9 rounded-2xl bg-white/20 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-[#00D2FF]" />
-                  </div>
-                </div>
+            <h1 className="hero-title text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+              Um novo jeito de viver <span className="text-[#D7E8FF]">em Talatona.</span>
+            </h1>
 
-                {/* The 3 Circular Preview Portals from Flyer 2 */}
-                <div className="space-y-3">
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
-                    Espaços Exclusivos da Moradia T4:
-                  </span>
+            <p className="max-w-sm text-xs leading-relaxed text-white/90 sm:text-sm">
+              Moradias T4 Duplex com 4 suítes, jardim e piscina privativa.
+            </p>
 
-                  <div className="grid grid-cols-3 gap-3 text-center">
-                    {/* Circle 1: Suíte Master */}
-                    <div
-                      onClick={() => setActiveCoverIdx(0)}
-                      className="group/item cursor-pointer flex flex-col items-center gap-2"
-                    >
-                      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg group-hover/item:border-[#00D2FF] group-hover/item:scale-105 transition-all">
-                        <img
-                          src="/media/showcase/inara-suite-master.jpg"
-                          alt="Suíte Master com Varanda Privativa"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <span className="text-[11px] font-bold text-slate-200 group-hover/item:text-[#00D2FF] transition-colors leading-tight">
-                        Suíte Master
-                      </span>
-                    </div>
-
-                    {/* Circle 2: Living Integrado */}
-                    <div
-                      onClick={() => setActiveCoverIdx(2)}
-                      className="group/item cursor-pointer flex flex-col items-center gap-2"
-                    >
-                      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg group-hover/item:border-[#00D2FF] group-hover/item:scale-105 transition-all">
-                        <img
-                          src="/media/showcase/inara-living-luz.jpg"
-                          alt="Sala com Luz Natural Difusa"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <span className="text-[11px] font-bold text-slate-200 group-hover/item:text-[#00D2FF] transition-colors leading-tight">
-                        Living com Luz
-                      </span>
-                    </div>
-
-                    {/* Circle 3: Piscina Privada */}
-                    <div
-                      onClick={() => setActiveCoverIdx(1)}
-                      className="group/item cursor-pointer flex flex-col items-center gap-2"
-                    >
-                      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-lg group-hover/item:border-[#00D2FF] group-hover/item:scale-105 transition-all">
-                        <img
-                          src="/media/cover/inara-pools-twilight.jpg"
-                          alt="Piscina Privativa Individual"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <span className="text-[11px] font-bold text-slate-200 group-hover/item:text-[#00D2FF] transition-colors leading-tight">
-                        Piscina Privativa
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Bottom Badge */}
-                <div className="p-3.5 rounded-2xl bg-black/30 border border-white/10 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <Landmark className="w-4 h-4 text-[#00D2FF]" />
-                    <span>Financiamento até 80%</span>
-                  </div>
-                  <strong className="text-[#00D2FF] font-bold">Standard Bank Angola</strong>
-                </div>
-              </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-medium text-white/90">
+              <span>30 moradias</span>
+              <span>217 m²</span>
+              <span>4 suítes</span>
             </div>
+
+            <button
+              type="button"
+              onClick={() => scrollToSection('agendar')}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#0A256C] shadow-md transition-transform hover:-translate-y-0.5 active:translate-y-0 [text-shadow:none]"
+            >
+              <Calendar className="h-3.5 w-3.5" />
+              <span>Agendar visita</span>
+            </button>
           </div>
         </div>
 
         {/* Clean Scene Selector (Fachada / Piscinas / Clube / Vídeo 3D) */}
-        <div className="absolute bottom-6 right-6 sm:right-12 z-20 flex flex-wrap items-center gap-2 bg-slate-950/80 backdrop-blur-md p-1.5 rounded-full border border-white/20 shadow-xl">
+        <div className="hero-scene-selector absolute bottom-4 left-4 right-4 sm:left-auto sm:right-8 sm:bottom-8 z-20 flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/75 backdrop-blur-xl p-1.5 rounded-full border border-white/20 shadow-xl">
           {HERO_COVER_SCENES.map((scene, idx) => (
             <button
               key={scene.id}
               onClick={() => setActiveCoverIdx(idx)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              aria-label={`Mostrar imagem: ${scene.period}`}
+              className={`hero-scene-button px-3.5 py-2 rounded-full text-xs font-semibold cursor-pointer flex items-center gap-1.5 ${
                 idx === activeCoverIdx
-                  ? 'bg-gradient-to-r from-[#00D2FF] to-[#0052CC] text-white shadow-md'
+                  ? 'bg-white text-[#07132C] shadow-md'
                   : 'text-white/70 hover:text-white'
               }`}
             >
@@ -692,7 +617,7 @@ export default function App() {
               ) : (
                 <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
               )}
-              <span>{scene.period}</span>
+              <span className="hidden sm:inline">{scene.period}</span>
             </button>
           ))}
         </div>
@@ -737,10 +662,37 @@ export default function App() {
         </div>
       </div>
 
+      <section className="tagline-section px-4 py-20 sm:px-8 sm:py-28" aria-label="O estilo de vida Inara">
+        <div className="mx-auto max-w-[920px] text-center">
+          <span className="mb-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#0052CC]">
+            <span className="h-px w-8 bg-[#0052CC]/40" />
+            Residencial Inara
+            <span className="h-px w-8 bg-[#0052CC]/40" />
+          </span>
+          <h2 className="tagline-title text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
+            {['Um lugar para viver bem.', 'Um endereço para chegar mais perto.'].map((line) => {
+              const words = line.split(' ');
+              return (
+                <span className="tagline-line" key={line}>
+                  {words.map((word, index) => (
+                    <React.Fragment key={`${word}-${index}`}>
+                      <span className="tagline-word" data-tagline-word>
+                        {word}
+                      </span>
+                      {index < words.length - 1 ? ' ' : null}
+                    </React.Fragment>
+                  ))}
+                </span>
+              );
+            })}
+          </h2>
+        </div>
+      </section>
+
       {/* =====================================================================
           3. PILAR 04 & OBRA REAL ("O QUE ESTÁ A NASCER AQUI VAI SURPREENDER-TE")
       ===================================================================== */}
-      <section id="obra" className="py-20 sm:py-28 bg-slate-50 border-y border-slate-200">
+      <section id="obra" data-reveal className="reveal-section py-20 sm:py-28 bg-slate-50 border-y border-slate-200">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left 6 Cols: Real Construction Multi-Stage Panel */}
@@ -835,7 +787,7 @@ export default function App() {
       {/* =====================================================================
           4. PILAR 03 — PARCERIA STANDARD BANK ANGOLA ("SABIA QUE...?")
       ===================================================================== */}
-      <section id="financiamento" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
+      <section id="financiamento" data-reveal className="reveal-section py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
         <div className="rounded-3xl bg-gradient-to-br from-[#0052CC] via-[#0066FF] to-[#3B0764] text-white p-8 sm:p-14 lg:p-16 shadow-2xl overflow-hidden relative">
           <div className="absolute inset-0 blueprint-grid-dark opacity-20 pointer-events-none" />
 
@@ -977,7 +929,7 @@ export default function App() {
       {/* =====================================================================
           5. PILAR 02 — MORADIAS T4 DUPLEX & PLANTA TÉCNICA INTERATIVA
       ===================================================================== */}
-      <section id="plantas" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
+      <section id="plantas" data-reveal className="reveal-section py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto space-y-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-[#0052CC] text-xs font-bold uppercase tracking-widest">
@@ -1088,7 +1040,7 @@ export default function App() {
       {/* =====================================================================
           6. PILAR 01 — LOCALIZAÇÃO PRIVILEGIADA EM TALATONA ("MORAR BEM TAMBÉM É ESTAR BEM LOCALIZADO")
       ===================================================================== */}
-      <section id="localizacao" className="py-20 sm:py-28 bg-slate-50 border-y border-slate-200">
+      <section id="localizacao" data-reveal className="reveal-section py-20 sm:py-28 bg-slate-50 border-y border-slate-200">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left 6 Cols: Narrative & Distances */}
@@ -1174,7 +1126,7 @@ export default function App() {
       {/* =====================================================================
           7. A CAMPANHA OFICIAL — GALERIA DAS PEÇAS GRÁFICAS
       ===================================================================== */}
-      <section id="campanha" className="py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
+      <section id="campanha" data-reveal className="reveal-section py-20 sm:py-28 px-4 sm:px-8 max-w-[1380px] mx-auto">
         <div className="space-y-12">
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
@@ -1250,7 +1202,7 @@ export default function App() {
       {/* =====================================================================
           8. PILAR 05 — AGENDAMENTO DE VISITA NO STAND ("SUA NOVA VIDA COMEÇA AQUI!")
       ===================================================================== */}
-      <section id="agendar" className="py-20 sm:py-28 bg-gradient-to-br from-slate-950 via-[#0A192F] to-[#1E1B4B] text-white">
+      <section id="agendar" data-reveal className="reveal-section py-20 sm:py-28 bg-gradient-to-br from-slate-950 via-[#0A192F] to-[#1E1B4B] text-white">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-8 space-y-12">
           <div className="max-w-2xl mx-auto text-center space-y-3">
             <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/10 backdrop-blur-md text-[#00D2FF] text-xs font-bold uppercase tracking-widest">
